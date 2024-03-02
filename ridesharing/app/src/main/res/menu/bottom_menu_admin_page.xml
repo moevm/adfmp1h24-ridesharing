@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/analytics_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Analytics"
+        android:icon="@drawable/baseline_analytics_24"/>
+    <item
+        android:id="@+id/cars_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Cars"
+        android:icon="@drawable/baseline_directions_car_24"/>
+</menu>
