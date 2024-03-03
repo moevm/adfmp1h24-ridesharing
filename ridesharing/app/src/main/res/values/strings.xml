@@ -6,6 +6,7 @@
     <string name="my_drives">Мои поездки</string>
     <string name="drive_history">История поездок</string>
     <string name="support">Поддержка</string>
+    <string name="admin">Администрирование</string>
     <string name="about">О нас</string>
     <string name="back_button">Назад</string>
     <string name="date_and_time">%s - %s</string>
