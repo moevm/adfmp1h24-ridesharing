@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Райдшеринг</string>
+    <string name="profile">Профиль</string>
+    <string name="find_companion">Найти попутчика</string>
+    <string name="create_drive">Создать поездку</string>
+    <string name="my_drives">Мои поездки</string>
+    <string name="drive_history">История поездок</string>
+    <string name="support">Поддержка</string>
+    <string name="about">О нас</string>
+    <string name="back_button">Назад</string>
+    <string name="date_and_time">%s - %s</string>
+    <string name="from">Откуда: %s</string>
+    <string name="to">Куда: %s</string>
+    <string name="drivePrice">Стоимость: %s тенге</string>
+    <string name="numberPlaces">Кол-во мест: %s</string>
+</resources>
