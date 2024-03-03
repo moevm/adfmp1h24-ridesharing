@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.etu.ridesharing.data.DataDriveInfoList
 import com.etu.ridesharing.models.DriveInfoModel
+import com.etu.ridesharing.ui.screens.FindCompanionScreen
 import com.etu.ridesharing.ui.screens.MyDrivesScreen
 import kotlinx.coroutines.launch
 
@@ -152,7 +153,7 @@ fun RidesharingApp(
             //val uiState by viewModel.uiState.collectAsState()
             NavHost(
                 navController = navController,
-                startDestination = RidesharingScreen.MyDrives.name,
+                startDestination = RidesharingScreen.FindCompanion.name,
                 modifier = Modifier.padding(innerPadding),
             ) {
                 composable(route = RidesharingScreen.Primary.name) {
@@ -168,6 +169,7 @@ fun RidesharingApp(
                 )*/
                 }
                 composable(route = RidesharingScreen.FindCompanion.name) {
+                    FindCompanionScreen(companionDrivesList = myDrivesList)
                     /*val context = LocalContext.current
                 SelectOptionScreen(
                     subtotal = uiState.price,

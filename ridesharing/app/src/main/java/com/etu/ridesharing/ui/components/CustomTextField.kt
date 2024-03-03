@@ -135,10 +135,34 @@ fun CustomTextField(
                     ),
                 )
             }
+            "dateTime" -> {
+                OutlinedTextField(
+                    value = value,
+                    onValueChange = onValueChange,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number, // Устанавливаем тип клавиатуры для числового ввода
+                        imeAction = ImeAction.Next // Устанавливаем действие клавиатуры для перехода к следующему полю
+                    ),
+                    keyboardActions = KeyboardActions(onNext = {
+                        // Здесь можно обработать нажатие кнопки перехода к следующему полю
+                    }),
+                    singleLine = true,
+                    shape = RoundedCornerShape(4.dp), // Форма поля ввода
+                    label = label,
+                    leadingIcon = leadIcon,
+                    //visualTransformation = DateTimeTransformation(),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Blue, // Цвет рамки при активации поля
+                        unfocusedBorderColor = Color.Gray, // Цвет рамки при неактивном поле
+                    ),
+                )
+            }
         }
     }
     }
 }
+
+
 
 class DateTransformation() : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
@@ -202,3 +226,6 @@ fun timeFilter(text: AnnotatedString): TransformedText {
 
     return TransformedText(AnnotatedString(out), numberOffsetTranslator)
 }
+
+
+
