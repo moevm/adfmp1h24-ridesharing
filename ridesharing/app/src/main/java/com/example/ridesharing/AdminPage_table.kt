@@ -6,32 +6,30 @@ import androidx.fragment.app.Fragment
 import com.example.ridesharing.fragments.Statistics
 import com.example.ridesharing.fragments.Cars
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 
 class AdminPage_table : AppCompatActivity() {
-    private val stats = Statistics()
-    private val cars = Cars()
-
-    private var bottom_navigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_admin_page_table)
-        change_fragment(stats)
 
-        bottom_navigation.setOnItemSelectedListener{
-            when(it.itemId){
-                R.id.analytics_page -> change_fragment(stats)
-                R.id.cars_page -> change_fragment(cars)
-            }
-            true
-        }
+        val bottomNav = findViewById<NavigationBarView>(R.id.bottom_navigation)
+        bottomNav.setOnItemSelectedListener(navListener)
+
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, Statistics()).commit()
     }
 
-    private fun change_fragment(fragment: Fragment){
-        if (fragment!=null){
-            val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragment_container, fragment)
-            transaction.commit()
+    private val navListener = NavigationBarView.OnItemSelectedListener {
+        lateinit var selectedFragment: Fragment
+        when (it.itemId) {
+            R.id.analytics_page -> {
+                selectedFragment = Statistics()
+            }
+            R.id.cars_page -> {
+                selectedFragment = Cars()
+            }
         }
+        supportFragmentManager.beginTransaction().replace(R.id.fragment_container, selectedFragment).commit()
+        true
     }
 }
