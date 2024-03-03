@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.etu.ridesharing.data.DataDriveInfoList
 import com.etu.ridesharing.models.DriveInfoModel
+import com.etu.ridesharing.ui.screens.AboutScreen
 import com.etu.ridesharing.ui.screens.FindCompanionScreen
 import com.etu.ridesharing.ui.screens.MyDrivesScreen
 import kotlinx.coroutines.launch
@@ -208,6 +209,9 @@ fun RidesharingApp(
 
                 }
                 composable(route = RidesharingScreen.Support.name) {
+                }
+                composable(route = RidesharingScreen.About.name) {
+                    AboutScreen()
                 }
             }
         }
