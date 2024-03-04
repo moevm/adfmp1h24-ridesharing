@@ -42,10 +42,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.etu.ridesharing.data.DataDriveInfoList
+import com.etu.ridesharing.data.TravelHistoryList
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.screens.AboutScreen
 import com.etu.ridesharing.ui.screens.FindCompanionScreen
 import com.etu.ridesharing.ui.screens.MyDrivesScreen
+import com.etu.ridesharing.ui.screens.TravelHistory
 import kotlinx.coroutines.launch
 
 
@@ -205,8 +207,7 @@ fun RidesharingApp(
                 )*/
                 }
                 composable(route = RidesharingScreen.DriveHistory.name) {
-
-
+                    TravelHistory(travelList = TravelHistoryList)
                 }
                 composable(route = RidesharingScreen.Support.name) {
                 }
