@@ -136,6 +136,10 @@ fun RidesharingApp(
     ) {
         Scaffold(
             topBar = {
+                var curScreen = currentScreen
+                if(currentScreen.name === RidesharingScreen.CreateDrive.name){
+                        curScreen = RidesharingScreen.MyDrives
+                }
                     RidesharingAppBar(
                         onClickMenu = {
                             scope.launch {
@@ -144,7 +148,7 @@ fun RidesharingApp(
                                 }
                             }
                         },
-                        currentScreen = currentScreen,
+                        currentScreen = curScreen,
                         canNavigateBack = false,
                         navigateUp = { /* TODO: implement back navigation */ }
                     )
@@ -182,6 +186,10 @@ fun RidesharingApp(
                 )*/
                 }
                 composable(route = RidesharingScreen.CreateDrive.name) {
+                    MyDrivesScreen(myDrivesList = myDrivesList,
+                        onRemoveDrive = { driveInfo -> removeDriveInfo(driveInfo) },
+                        openDialog = true,
+                    )
                     /*SelectOptionScreen(
                     subtotal = uiState.price,
                     options = uiState.pickupOptions,
