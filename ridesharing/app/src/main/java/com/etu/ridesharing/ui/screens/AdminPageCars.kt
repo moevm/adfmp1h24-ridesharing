@@ -106,33 +106,27 @@ fun CarFilterDialog(
         ) {
             Row(){
                 Column(
-                    modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp)
+                    modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp),
                 ) {
-                    Button(
-                        modifier = Modifier
-                            .padding(25.dp, 10.dp)
-                            .fillMaxWidth(),
-                        onClick = { onDismissRequest()  }
-                    ){Text("Применить фильтры")}
+                    AutoCompleteTextField(
+                        label = stringResource(id = R.string.mark),
+                        categories = listOf("Toyota", "Volkswagen", "Ford", "Hyundai", "Honda")
+                    )
+                    AutoCompleteTextField(
+                        label = stringResource(id = R.string.number),
+                        categories = listOf("А001АА", "В002ВВ", "Е003ЕЕ", "К004КК", "М005ММ")
+                    )
+                    AutoCompleteTextField(
+                        label = stringResource(id = R.string.color),
+                        categories = listOf("Белый", "Чёрный", "Серый", "Красный", "Синий")
+                    )
+                    Button(onClick = {  }, modifier = Modifier.padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
+                        Text("Применить фильтры")
+                    }
                 }
-                Column(modifier = Modifier){
-                    Row(modifier = Modifier.padding(25.dp, 10.dp)){
-                        AutoCompleteTextField(
-                            label = stringResource(id = R.string.mark),
-                            categories = listOf("Toyota","Volkswagen","Ford","Hyundai","Honda")
-                        )
-                    }
-                    Row(modifier = Modifier.padding(25.dp, 10.dp)){
-                        AutoCompleteTextField(
-                            label = stringResource(id = R.string.number),
-                            categories = listOf("А001АА","В002ВВ","Е003ЕЕ","К004КК","М005ММ")
-                        )
-                    }
-                    Row(modifier = Modifier.padding(25.dp, 10.dp)){
-                        AutoCompleteTextField(
-                            label = stringResource(id = R.string.color),
-                            categories = listOf("Белый","Чёрный","Серый","Красный","Синий")
-                        )
+                Column(modifier = Modifier.weight(0.2f).padding(start = 16.dp)) {
+                    IconButton(onClick = { onDismissRequest() }, modifier = Modifier.size(R.dimen.padding_medium.dp)) {
+                        Icon(Icons.Outlined.Close, contentDescription = "Localized description")
                     }
                 }
             }
