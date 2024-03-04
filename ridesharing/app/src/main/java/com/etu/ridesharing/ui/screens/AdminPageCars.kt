@@ -8,9 +8,17 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -26,12 +34,14 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
 import com.etu.ridesharing.data.DataCarInfoList
+import com.etu.ridesharing.ui.components.AutoCompleteTextField
 import com.etu.ridesharing.ui.components.CarCard
 import com.etu.ridesharing.ui.components.CustomTextField
+import com.etu.ridesharing.ui.components.MyDriveDialog
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable @Preview
 fun AdminPageCars(
     carsList: DataCarInfoList = DataCarInfoList,
@@ -41,11 +51,16 @@ fun AdminPageCars(
     var textNumber by rememberSaveable { mutableStateOf("") }
     var textColor by rememberSaveable { mutableStateOf("") }
 
-
-    var sheetState = rememberModalBottomSheetState()
     var isSheetOpen by rememberSaveable {
         mutableStateOf(false)
     }
+
+    if (isSheetOpen){
+        CarFilterDialog(
+            onDismissRequest = { isSheetOpen = false },
+        )
+    }
+
     Column(modifier.fillMaxWidth().fillMaxHeight()) {
         Button(
             modifier = Modifier
@@ -73,58 +88,54 @@ fun AdminPageCars(
             }
         }
     }
+}
 
 
-
-    if (isSheetOpen){
-        ModalBottomSheet(
-            sheetState = sheetState,
-            onDismissRequest = { isSheetOpen = false }
+@Composable
+fun CarFilterDialog(
+    onDismissRequest: () -> Unit,
+) {
+    var textMark by rememberSaveable { mutableStateOf("") }
+    var textNumber by rememberSaveable { mutableStateOf("") }
+    var textColor by rememberSaveable { mutableStateOf("") }
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
         ) {
-            Button(
-                modifier = Modifier
-                    .padding(25.dp, 10.dp)
-                    .fillMaxWidth(),
-                onClick = { isSheetOpen = false }
-            ){Text("Применить фильтры")}
-            Column(modifier = Modifier){
-                Row(modifier = Modifier.padding(25.dp, 10.dp)){
-                    CustomTextField(
-                        text = stringResource(id = R.string.mark),
-                        type = "text",
-                        label = { Text("Марка") },
-                        value = textMark,
-                        onValueChange = {
-                            textMark = it
-                        },
-                    )
+            Row(){
+                Column(
+                    modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp)
+                ) {
+                    Button(
+                        modifier = Modifier
+                            .padding(25.dp, 10.dp)
+                            .fillMaxWidth(),
+                        onClick = { onDismissRequest()  }
+                    ){Text("Применить фильтры")}
                 }
-                Row(modifier = Modifier.padding(25.dp, 10.dp)){
-                    CustomTextField(
-                        text = stringResource(id = R.string.number),
-                        type = "text",
-                        label = { Text("Номер") },
-                        value = textNumber,
-                        onValueChange = {
-                            textNumber = it
-                        },
-                    )
-
-                }
-                Row(modifier = Modifier.padding(25.dp, 10.dp)){
-                    CustomTextField(
-                        text = stringResource(id = R.string.color),
-                        type = "text",
-                        label = { Text("Цвет") },
-                        value = textColor,
-                        onValueChange = {
-                            textColor = it
-                        },
-                    )
-
+                Column(modifier = Modifier){
+                    Row(modifier = Modifier.padding(25.dp, 10.dp)){
+                        AutoCompleteTextField(
+                            label = stringResource(id = R.string.mark),
+                            categories = listOf("Toyota","Volkswagen","Ford","Hyundai","Honda")
+                        )
+                    }
+                    Row(modifier = Modifier.padding(25.dp, 10.dp)){
+                        AutoCompleteTextField(
+                            label = stringResource(id = R.string.number),
+                            categories = listOf("А001АА","В002ВВ","Е003ЕЕ","К004КК","М005ММ")
+                        )
+                    }
+                    Row(modifier = Modifier.padding(25.dp, 10.dp)){
+                        AutoCompleteTextField(
+                            label = stringResource(id = R.string.color),
+                            categories = listOf("Белый","Чёрный","Серый","Красный","Синий")
+                        )
+                    }
                 }
             }
         }
     }
 }
-
