@@ -17,4 +17,6 @@
     <string name="mark">Марка: </string>
     <string name="color">Цвет: </string>
     <string name="number">Номер: </string>
+    <string name="companionCardCities">%s —> %s</string>
+    <string name="companionCardPrice">%s тенге</string>
 </resources>
