@@ -106,7 +106,7 @@ fun CarFilterDialog(
         ) {
             Row(){
                 Column(
-                    modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp),
+                    modifier = Modifier.fillMaxWidth(0.9f).padding(start = 16.dp, top = 32.dp),
                 ) {
                     AutoCompleteTextField(
                         label = stringResource(id = R.string.mark),
@@ -124,7 +124,7 @@ fun CarFilterDialog(
                         Text("Применить фильтры")
                     }
                 }
-                Column(modifier = Modifier.weight(0.2f).padding(start = 16.dp)) {
+                Column(modifier = Modifier.weight(0.2f).padding(end = 8.dp)) {
                     IconButton(onClick = { onDismissRequest() }, modifier = Modifier.size(R.dimen.padding_medium.dp)) {
                         Icon(Icons.Outlined.Close, contentDescription = "Localized description")
                     }
