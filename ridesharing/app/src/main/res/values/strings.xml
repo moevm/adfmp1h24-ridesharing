@@ -6,6 +6,7 @@
     <string name="my_drives">Мои поездки</string>
     <string name="drive_history">История поездок</string>
     <string name="support">Поддержка</string>
+    <string name="admin">Администрирование</string>
     <string name="about">О нас</string>
     <string name="back_button">Назад</string>
     <string name="date_and_time">%s - %s</string>
@@ -13,6 +14,9 @@
     <string name="to">Куда: %s</string>
     <string name="drivePrice">Стоимость: %s тенге</string>
     <string name="numberPlaces">Кол-во мест: %s</string>
+    <string name="mark">Марка: </string>
+    <string name="color">Цвет: </string>
+    <string name="number">Номер: </string>
     <string name="companionCardCities">%s —> %s</string>
     <string name="companionCardPrice">%s тенге</string>
 </resources>
