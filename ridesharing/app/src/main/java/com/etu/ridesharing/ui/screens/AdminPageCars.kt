@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.etu.ridesharing.R
 import com.etu.ridesharing.data.DataCarInfoList
 import com.etu.ridesharing.ui.components.CarCard
+import com.etu.ridesharing.ui.components.CustomTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable @Preview
@@ -84,21 +85,42 @@ fun AdminPageCars(
                 modifier = Modifier
                     .padding(25.dp, 10.dp)
                     .fillMaxWidth(),
-                onClick = {}
+                onClick = { isSheetOpen = false }
             ){Text("Применить фильтры")}
             Column(modifier = Modifier){
                 Row(modifier = Modifier.padding(25.dp, 10.dp)){
-                    Text(text = stringResource(id = R.string.mark))
-                    TextField(value = textMark, onValueChange = {}, singleLine = true)
+                    CustomTextField(
+                        text = stringResource(id = R.string.mark),
+                        type = "text",
+                        label = { Text("Марка") },
+                        value = textMark,
+                        onValueChange = {
+                            textMark = it
+                        },
+                    )
                 }
                 Row(modifier = Modifier.padding(25.dp, 10.dp)){
-                    Text(text = stringResource(id = R.string.number))
-                    TextField(value = textNumber, onValueChange = {}, singleLine = true)
+                    CustomTextField(
+                        text = stringResource(id = R.string.number),
+                        type = "text",
+                        label = { Text("Номер") },
+                        value = textNumber,
+                        onValueChange = {
+                            textNumber = it
+                        },
+                    )
 
                 }
                 Row(modifier = Modifier.padding(25.dp, 10.dp)){
-                    Text(text = stringResource(id = R.string.color))
-                    TextField(value = textColor, onValueChange = {}, singleLine = true)
+                    CustomTextField(
+                        text = stringResource(id = R.string.color),
+                        type = "text",
+                        label = { Text("Цвет") },
+                        value = textColor,
+                        onValueChange = {
+                            textColor = it
+                        },
+                    )
 
                 }
             }
