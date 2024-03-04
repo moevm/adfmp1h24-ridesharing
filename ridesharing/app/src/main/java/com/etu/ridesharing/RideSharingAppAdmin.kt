@@ -18,9 +18,13 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.compose.rememberNavController
+import com.etu.ridesharing.data.DataCarInfoList
 
 data class BottomNavItem(
     val label: String,
@@ -31,12 +35,12 @@ data class BottomNavItem(
 object Constants {
     val BottomNavItems = listOf(
         BottomNavItem(
-            label = "Statistics",
+            label = "Статистика",
             icon = R.drawable.baseline_analytics_24,
             route = "stats"
         ),
         BottomNavItem(
-            label = "Cars",
+            label = "Автомобили",
             icon = R.drawable.baseline_directions_car_24,
             route = "cars"
         )
@@ -48,6 +52,7 @@ fun NavHostContainer(
     navController: NavHostController,
     padding: PaddingValues
 ) {
+    val carsList by remember { mutableStateOf(DataCarInfoList) }
     NavHost(
         navController = navController,
 
@@ -64,7 +69,7 @@ fun NavHostContainer(
             }
             // route : cars
             composable("cars") {
-                AdminPageCars()
+                AdminPageCars(carsList = carsList)
             }
         })
 }

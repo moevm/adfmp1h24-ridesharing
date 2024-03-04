@@ -14,4 +14,7 @@
     <string name="to">Куда: %s</string>
     <string name="drivePrice">Стоимость: %s тенге</string>
     <string name="numberPlaces">Кол-во мест: %s</string>
+    <string name="mark">Марка: </string>
+    <string name="color">Цвет: </string>
+    <string name="number">Номер: </string>
 </resources>
