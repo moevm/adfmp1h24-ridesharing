@@ -138,7 +138,7 @@ fun CarDialog(
                     )
                     Spacer(modifier = Modifier.padding(vertical = 8.dp))
                     Button(onClick = { onDismissRequest() }, modifier = Modifier
-                        .padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
+                        .padding( top = 16.dp, start = 80.dp, bottom = 16.dp)) {
                         Text("Сохранить")
                     }
                 }
