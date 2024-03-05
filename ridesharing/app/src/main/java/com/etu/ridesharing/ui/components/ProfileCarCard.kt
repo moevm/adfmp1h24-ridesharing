@@ -64,7 +64,9 @@ fun ProfileCarCard(
             }
             Column(
                 horizontalAlignment = Alignment.End,
-                modifier = Modifier.fillMaxHeight().fillMaxWidth(0.7f)
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(0.7f)
             ) {
                 IconButton(
                     onClick = onDeleteItem,
@@ -103,41 +105,47 @@ fun CarDialog(
                 },
             shape = RoundedCornerShape(16.dp),
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            ) {
-                CustomTextField(
-                    text = "Марка:",
-                    type = "text",
-                    label = { Text("Марка автомобиля") },
-                    value = brand,
-                    onValueChange = {
-                        brand = it
-                    },
-                )
-                CustomTextField(
-                    text = "Номер:",
-                    type = "text",
-                    label = { Text("Номер автомобиля") },
-                    value = number,
-                    onValueChange = {
-                        number = it
-                    },
-                )
-                CustomTextField(
-                    text = "Цвет: ",
-                    type = "text",
-                    label = { Text("Цвет автомобиля") },
-                    value = color,
-                    onValueChange = {
-                        color = it
-                    },
-                )
-                Spacer(modifier = Modifier.padding(vertical = 8.dp))
-                Button(onClick = { onDismissRequest() }, modifier = Modifier.align(Alignment.CenterHorizontally).height(50.dp)) {
-                    Text("Сохранить")
+            Row {
+                Column(
+                    modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp)
+                ) {
+                    CustomTextField(
+                        text = "Марка:",
+                        type = "text",
+                        label = { Text("Марка автомобиля") },
+                        value = brand,
+                        onValueChange = {
+                            brand = it
+                        },
+                    )
+                    CustomTextField(
+                        text = "Номер:",
+                        type = "text",
+                        label = { Text("Номер автомобиля") },
+                        value = number,
+                        onValueChange = {
+                            number = it
+                        },
+                    )
+                    CustomTextField(
+                        text = "Цвет: ",
+                        type = "text",
+                        label = { Text("Цвет автомобиля") },
+                        value = color,
+                        onValueChange = {
+                            color = it
+                        },
+                    )
+                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                    Button(onClick = { onDismissRequest() }, modifier = Modifier
+                        .padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
+                        Text("Сохранить")
+                    }
+                }
+                Column(modifier = Modifier.weight(0.2f).padding(start = 16.dp)) {
+                    IconButton(onClick = { onDismissRequest() }, modifier = Modifier.size(R.dimen.padding_medium.dp)) {
+                        Icon(Icons.Outlined.Close, contentDescription = "Localized description")
+                    }
                 }
             }
         }
