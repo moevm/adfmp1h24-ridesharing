@@ -163,7 +163,7 @@ fun MyDriveDialog(
                                 driveNumberPlaces = it
                             },
                         )
-                    Button(onClick = {  }, modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
+                    Button(onClick = { onDismissRequest() }, modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
                         Text("Сохранить")
                     }
                 }

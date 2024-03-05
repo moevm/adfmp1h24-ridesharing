@@ -190,7 +190,7 @@ fun FindCompanionDialog(
                             filterPriceHigh = it
                         },
                     )
-                    Button(onClick = {  }, modifier = Modifier.padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
+                    Button(onClick = { onDismissRequest() }, modifier = Modifier.padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
                         Text("Применить фильтры")
                     }
                 }
