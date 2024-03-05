@@ -26,6 +26,5 @@ fun CarCard(
                 Text(fontSize = 26.sp,text = stringResource(id = R.string.mark,carInfo.mark), modifier = Modifier.align(Alignment.CenterHorizontally))
                 Text(fontSize = 26.sp,text = stringResource(id = R.string.number, carInfo.number), modifier = Modifier.align(Alignment.CenterHorizontally))
                 Text(fontSize = 26.sp,text = stringResource(id = R.string.color,carInfo.color), modifier = Modifier.align(Alignment.CenterHorizontally))
-        
     }
 }
