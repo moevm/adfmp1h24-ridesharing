@@ -1,5 +1,6 @@
 package com.etu.ridesharing.ui.screens
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +31,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -98,10 +101,16 @@ fun CarFilterDialog(
     var textMark by rememberSaveable { mutableStateOf("") }
     var textNumber by rememberSaveable { mutableStateOf("") }
     var textColor by rememberSaveable { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                },
             shape = RoundedCornerShape(16.dp),
         ) {
             Row(){
@@ -109,15 +118,15 @@ fun CarFilterDialog(
                     modifier = Modifier.fillMaxWidth(0.9f).padding(start = 16.dp, top = 32.dp),
                 ) {
                     AutoCompleteTextField(
-                        label = stringResource(id = R.string.mark),
+                        label = stringResource(id = R.string.mark,""),
                         categories = listOf("Toyota", "Volkswagen", "Ford", "Hyundai", "Honda")
                     )
                     AutoCompleteTextField(
-                        label = stringResource(id = R.string.number),
+                        label = stringResource(id = R.string.number,""),
                         categories = listOf("А001АА", "В002ВВ", "Е003ЕЕ", "К004КК", "М005ММ")
                     )
                     AutoCompleteTextField(
-                        label = stringResource(id = R.string.color),
+                        label = stringResource(id = R.string.color,""),
                         categories = listOf("Белый", "Чёрный", "Серый", "Красный", "Синий")
                     )
                     Button(onClick = {  }, modifier = Modifier.padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {

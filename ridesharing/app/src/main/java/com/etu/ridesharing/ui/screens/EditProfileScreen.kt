@@ -1,7 +1,9 @@
 package com.etu.ridesharing.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -10,8 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -25,11 +31,19 @@ fun EditProfileScreen(navController: NavController) {
     val lastNameState = remember { mutableStateOf("") }
     val middleNameState = remember { mutableStateOf("") }
     val telephon = remember { mutableStateOf("88005553535") }
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        focusManager.clearFocus()
+                    }
+                )
+            },
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Row(
@@ -47,7 +61,7 @@ fun EditProfileScreen(navController: NavController) {
             value = firstNameState.value,
             onValueChange = { firstNameState.value = it },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text(text = "Имя") }
+            label = { Text(text = "Имя") },
         )
         TextField(
             value = lastNameState.value,
@@ -64,7 +78,7 @@ fun EditProfileScreen(navController: NavController) {
         TextField(
             value = telephon.value,
             onValueChange = {
-                // Фильтруем ввод, оставляя только чисел
+                // Фильтруем ввод, оставляя только числа
                 val newText = it.filter { char -> char.isDigit() }
                 telephon.value = newText
             },
