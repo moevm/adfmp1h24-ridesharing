@@ -38,14 +38,18 @@ import androidx.compose.ui.unit.dp
 import com.etu.ridesharing.data.DataDriveInfoList
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.screens.AboutScreen
+import com.etu.ridesharing.ui.screens.EditProfileScreen
 import com.etu.ridesharing.ui.screens.FindCompanionScreen
 import com.etu.ridesharing.ui.screens.MyDrivesScreen
+import com.etu.ridesharing.ui.screens.ProfileScreen
+import com.etu.ridesharing.ui.screens.RegistrationScreen
 import kotlinx.coroutines.launch
 
 
 enum class RidesharingScreen(@StringRes val title: Int) {
     Primary(title = R.string.app_name),
     Profile(title = R.string.profile),
+    EditProfile(title = R.string.profile),
     FindCompanion(title = R.string.find_companion),
     CreateDrive(title = R.string.create_drive),
     MyDrives(title = R.string.my_drives),
@@ -65,22 +69,23 @@ fun RidesharingAppBar(
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier = modifier){
+    if(currentScreen.name !== RidesharingScreen.Primary.name) {
+        Row(modifier = modifier) {
 
-        TopAppBar(
-            title = { Text(stringResource(currentScreen.title)) },
-            colors = TopAppBarDefaults.mediumTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            ),
-            modifier = modifier,
-            navigationIcon = {
-                IconButton(onClick = onClickMenu) {
-                    Icon(Icons.Outlined.Menu, contentDescription = "Localized description")
+            TopAppBar(
+                title = { Text(stringResource(currentScreen.title)) },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                ),
+                modifier = modifier,
+                navigationIcon = {
+                    IconButton(onClick = onClickMenu) {
+                        Icon(Icons.Outlined.Menu, contentDescription = "Localized description")
+                    }
                 }
-            }
-        )
+            )
+        }
     }
-
 }
 
 
@@ -105,7 +110,7 @@ fun RidesharingApp(
             ModalDrawerSheet {
                 Column() {
                     RidesharingScreen.values().forEach { screen ->
-                        if(screen.name !== RidesharingScreen.Primary.name){
+                        if(screen.name !== RidesharingScreen.Primary.name && screen.name !== RidesharingScreen.EditProfile.name){
                             Text(
                                 text = stringResource(screen.title),
                                 modifier = Modifier
@@ -153,63 +158,38 @@ fun RidesharingApp(
             //val uiState by viewModel.uiState.collectAsState()
             NavHost(
                 navController = navController,
-                startDestination = RidesharingScreen.FindCompanion.name,
+                startDestination = RidesharingScreen.Primary.name,
                 modifier = Modifier.padding(innerPadding),
             ) {
+                composable(route = RidesharingScreen.Profile.name) {
+                    //ProfileScreen(
+                    //    editProfileClick = {navController.navigate()}
+                   // )
+                    ProfileScreen(editProfileClick = {navController.navigate(RidesharingScreen.EditProfile.name)})
+                }
                 composable(route = RidesharingScreen.Primary.name) {
-                    /*StartOrderScreen(
-                    quantityOptions = DataSource.quantityOptions,
-                    onNextButtonClicked = {
-                        viewModel.setQuantity(it)
-                        navController.navigate(CupcakeScreen.Flavor.name)
-                    },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.padding_medium))
-                )*/
+                    RegistrationScreen(onButtonClick = {navController.navigate(RidesharingScreen.FindCompanion.name) })
                 }
                 composable(route = RidesharingScreen.FindCompanion.name) {
                     FindCompanionScreen(companionDrivesList = myDrivesList)
-                    /*val context = LocalContext.current
-                SelectOptionScreen(
-                    subtotal = uiState.price,
-                    options = DataSource.flavors.map { id -> context.resources.getString(id) },
-                    onNextButtonClicked = { navController.navigate(CupcakeScreen.Pickup.name) },
-                    onCancelButtonClicked = {cancelOrderAndNavigateToStart(viewModel, navController)},
-                    onSelectionChanged = { viewModel.setFlavor(it) },
-                    modifier = Modifier.fillMaxHeight()
-                )*/
                 }
                 composable(route = RidesharingScreen.CreateDrive.name) {
                     MyDrivesScreen(myDrivesList = myDrivesList,
                         onRemoveDrive = { driveInfo -> removeDriveInfo(driveInfo) },
                         openDialog = true,
                     )
-                    /*SelectOptionScreen(
-                    subtotal = uiState.price,
-                    options = uiState.pickupOptions,
-                    onNextButtonClicked = { navController.navigate(CupcakeScreen.Summary.name) },
-                    onCancelButtonClicked = {cancelOrderAndNavigateToStart(viewModel, navController)},
-                    onSelectionChanged = { viewModel.setDate(it) },
-                    modifier = Modifier.fillMaxHeight()
-                )*/
                 }
                 composable(route = RidesharingScreen.MyDrives.name) {
                     MyDrivesScreen(myDrivesList = myDrivesList,
                         onRemoveDrive = { driveInfo -> removeDriveInfo(driveInfo) }
                     )
-                    /*OrderSummaryScreen(
-                    orderUiState = uiState,
-                    onCancelButtonClicked = {cancelOrderAndNavigateToStart(viewModel, navController)},
-                    onSendButtonClicked = { subject: String, summary: String ->
-
-                    },
-                    modifier = Modifier.fillMaxHeight()
-                )*/
                 }
                 composable(route = RidesharingScreen.DriveHistory.name) {
 
 
+                }
+                composable(route = RidesharingScreen.EditProfile.name){
+                    EditProfileScreen()
                 }
                 composable(route = RidesharingScreen.Support.name) {
                 }

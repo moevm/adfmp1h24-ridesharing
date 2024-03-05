@@ -16,7 +16,9 @@ import androidx.compose.ui.unit.sp
 import com.etu.ridesharing.R
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(
+    editProfileClick: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -61,7 +63,7 @@ fun ProfileScreen() {
                 Text(text = "Добавить машину", fontSize = 18.sp)
             }
             Button(
-                onClick = {  },
+                onClick = editProfileClick,
                 modifier = Modifier.padding(vertical = 8.dp)
             ) {
                 Text(text = "Редактировать профиль", fontSize = 18.sp)
