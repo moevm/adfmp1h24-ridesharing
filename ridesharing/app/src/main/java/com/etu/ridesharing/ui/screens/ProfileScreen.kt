@@ -7,6 +7,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -15,6 +17,8 @@ import androidx.compose.ui.unit.sp
 import com.etu.ridesharing.R
 import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.models.CarInfoModel
+import com.etu.ridesharing.ui.components.CarDialog
+import com.etu.ridesharing.ui.components.MyDriveDialog
 import com.etu.ridesharing.ui.components.ProfileCarCard
 
 @Composable
@@ -22,8 +26,18 @@ fun ProfileScreen(
     editProfileClick: () -> Unit,
     myCarsList: MutableList<CarInfoState>, // Список автомобилей
     onRemoveCar: (CarInfoState) -> Unit, // Функция для удаления автомобиля
+    //openDialog: Boolean = false,
     modifier: Modifier = Modifier
 ) {
+    val openAlertDialog = remember { mutableStateOf(false) }
+    when {
+        // ...
+        openAlertDialog.value -> {
+            CarDialog(
+                onDismissRequest = { openAlertDialog.value = false },
+            )
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,7 +104,7 @@ fun ProfileScreen(
             Text(text = "Редактировать профиль", fontSize = 18.sp)
         }
         Button(
-            onClick = {},
+            onClick = {openAlertDialog.value = true},
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Добавить автомобиль", fontSize = 18.sp)
