@@ -76,7 +76,7 @@ fun RegistrationScreen(
             onClick = onButtonClick,
             modifier = Modifier
                 .padding(vertical = 16.dp)
-                .width(IntrinsicSize.Min)
+                .width(300.dp)
 
         ) {
             Text(
