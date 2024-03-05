@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.etu.ridesharing.R
 import com.etu.ridesharing.data.CarInfoState
 
@@ -22,17 +23,8 @@ fun CarCard(
     modifier: Modifier = Modifier
 ){
     Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier){
-            Row(modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_medium))){
-                Text(text = stringResource(id = R.string.mark,carInfo.mark))
-            }
-            Row(modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_medium))){
-                Text(text = stringResource(id = R.string.number,carInfo.number))
-            }
-            Row(modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_medium))){
-                Text(text = stringResource(id = R.string.color,carInfo.color))
-            }
-        }
-        
+                Text(fontSize = 26.sp,text = stringResource(id = R.string.mark,carInfo.mark), modifier = Modifier.align(Alignment.CenterHorizontally))
+                Text(fontSize = 26.sp,text = stringResource(id = R.string.number, carInfo.number), modifier = Modifier.align(Alignment.CenterHorizontally))
+                Text(fontSize = 26.sp,text = stringResource(id = R.string.color,carInfo.color), modifier = Modifier.align(Alignment.CenterHorizontally))
     }
 }

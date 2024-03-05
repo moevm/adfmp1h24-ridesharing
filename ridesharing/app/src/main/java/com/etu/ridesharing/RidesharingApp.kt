@@ -35,16 +35,24 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.etu.ridesharing.data.DataDriveInfoList
 import com.etu.ridesharing.data.DataProfileCarInfoModel
 import com.etu.ridesharing.models.CarInfoModel
-import com.etu.ridesharing.models.DriveInfoModel
-import com.etu.ridesharing.ui.screens.AboutScreen
 import com.etu.ridesharing.ui.screens.EditProfileScreen
-import com.etu.ridesharing.ui.screens.FindCompanionScreen
-import com.etu.ridesharing.ui.screens.MyDrivesScreen
 import com.etu.ridesharing.ui.screens.ProfileScreen
 import com.etu.ridesharing.ui.screens.RegistrationScreen
+import com.etu.ridesharing.data.MessagesList
+import com.etu.ridesharing.data.TravelHistoryList
+import com.etu.ridesharing.data.DataDriveList
+import com.etu.ridesharing.models.DriveInfoModel
+import com.etu.ridesharing.ui.screens.AboutScreen
+import com.etu.ridesharing.ui.screens.DriveScreen
+import com.etu.ridesharing.ui.screens.FindCompanionScreen
+import com.etu.ridesharing.ui.screens.MyDrivesScreen
+import com.etu.ridesharing.ui.screens.SupportDialog
+import com.etu.ridesharing.ui.screens.TravelHistory
 import kotlinx.coroutines.launch
 
 
@@ -58,7 +66,8 @@ enum class RidesharingScreen(@StringRes val title: Int) {
     DriveHistory(title = R.string.drive_history),
     Support(title = R.string.support),
     About(title = R.string.about),
-    Admin(title = R.string.admin)
+    Admin(title = R.string.admin),
+    Drive(title = R.string.drive),
 }
 
 
@@ -98,9 +107,10 @@ fun RidesharingApp(
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = RidesharingScreen.valueOf(
-        backStackEntry?.destination?.route ?: RidesharingScreen.Primary.name
+        backStackEntry?.destination?.route?.substringBefore("?") ?: RidesharingScreen.Primary.name
     )
     var myDrivesList by remember { mutableStateOf(DataDriveInfoList.driveList) }
+    var driveList by remember { mutableStateOf(DataDriveList.driveList) }
     fun removeDriveInfo(driveInfo: DriveInfoModel) {
         myDrivesList = myDrivesList.toMutableList().apply { remove(driveInfo) }
     }
@@ -111,6 +121,8 @@ fun RidesharingApp(
             remove(carInfo)
         }
     }
+    val travelList by remember { mutableStateOf(TravelHistoryList) }
+    val messageList by remember {mutableStateOf(MessagesList)}
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
@@ -119,7 +131,7 @@ fun RidesharingApp(
             ModalDrawerSheet {
                 Column() {
                     RidesharingScreen.values().forEach { screen ->
-                        if(screen.name !== RidesharingScreen.Primary.name && screen.name !== RidesharingScreen.EditProfile.name){
+                        if(screen.name !== RidesharingScreen.Primary.name && screen.name !== RidesharingScreen.EditProfile.name && screen.name !== RidesharingScreen.Drive.name){
                             Text(
                                 text = stringResource(screen.title),
                                 modifier = Modifier
@@ -183,7 +195,9 @@ fun RidesharingApp(
                     RegistrationScreen(onButtonClick = {navController.navigate(RidesharingScreen.FindCompanion.name) })
                 }
                 composable(route = RidesharingScreen.FindCompanion.name) {
-                    FindCompanionScreen(companionDrivesList = myDrivesList)
+                    FindCompanionScreen(companionDrivesList = myDrivesList, onItemClick = { selectedDriveId ->
+                        navController.navigate("${RidesharingScreen.Drive.name}?driveId=${selectedDriveId}")
+                    })
                 }
                 composable(route = RidesharingScreen.CreateDrive.name) {
                     MyDrivesScreen(myDrivesList = myDrivesList,
@@ -197,19 +211,24 @@ fun RidesharingApp(
                     )
                 }
                 composable(route = RidesharingScreen.DriveHistory.name) {
-
-
+                    TravelHistory(travelList = travelList)
                 }
                 composable(route = RidesharingScreen.EditProfile.name){
                     EditProfileScreen(navController = navController)
                 }
                 composable(route = RidesharingScreen.Support.name) {
+                    SupportDialog(messagesList = messageList)
                 }
                 composable(route = RidesharingScreen.Admin.name) {
                     RideSharingAppAdmin()
                 }
                 composable(route = RidesharingScreen.About.name) {
                     AboutScreen()
+                }
+                composable(route= "Drive?driveId={driveId}",arguments = listOf(navArgument("driveId") { defaultValue = "" })){ backStackEntry ->
+                    //val driveId = Integer.parseInt(backStackEntry.arguments?.getString("driveId"))
+                    val driveId = backStackEntry.arguments?.getString("driveId")
+                    DriveScreen(driveModel = driveList[Integer.parseInt(driveId)])
                 }
             }
         }

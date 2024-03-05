@@ -54,6 +54,7 @@ import com.etu.ridesharing.ui.components.MyDriveCard
 @Composable
 fun FindCompanionScreen(
     companionDrivesList: MutableList<DriveInfoModel>,
+    onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val openAlertDialog = remember { mutableStateOf(false) }
@@ -107,6 +108,7 @@ fun FindCompanionScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                     FindCompanionCard(
+                        onItemClick = onItemClick,
                         driveInfoModel = companionDrivesList[driveIndex],
                         modifier = modifier
                             .size(width = 350.dp, height = 150.dp),

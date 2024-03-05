@@ -8,6 +8,7 @@
     <string name="support">Поддержка</string>
     <string name="admin">Администрирование</string>
     <string name="about">О нас</string>
+    <string name="drive">Поездка</string>
     <string name="back_button">Назад</string>
     <string name="date_and_time">%s - %s</string>
     <string name="from">Откуда: %s</string>
@@ -19,4 +20,6 @@
     <string name="number">Номер: %s</string>
     <string name="companionCardCities">%s —> %s</string>
     <string name="companionCardPrice">%s тенге</string>
+    <string name="driverFIO">ФИО: %s</string>
+    driverFIO
 </resources>
