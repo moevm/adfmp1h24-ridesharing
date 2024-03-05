@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -30,12 +31,11 @@ fun MessageCardLeft(
     modifier: Modifier = Modifier,
 ){
     Row(modifier = modifier
-            .background(color = colorResource(id = R.color.purple_200))
             .fillMaxWidth(0.9f),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ){
-        Column(){
+        Column(modifier = Modifier.width(250.dp).background(color = colorResource(id = R.color.purple_200))){
             Text(text = author, modifier=Modifier.padding(10.dp))
             Text(text = text, modifier=Modifier.padding(start=10.dp, end=10.dp, bottom=10.dp))
         }
@@ -49,12 +49,12 @@ fun MessageCardRight(
 ){
     Row(
         modifier = modifier
-            .background(color = colorResource(id = R.color.teal_200))
             .fillMaxWidth(0.9f),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
     ){
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End){
+        Spacer(Modifier.width(50.dp))
+        Column(modifier = Modifier.fillMaxWidth().background(color = colorResource(id = R.color.teal_200))){
             Text(text = text, modifier=Modifier.padding(10.dp))
         }
     }
