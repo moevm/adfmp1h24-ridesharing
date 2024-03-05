@@ -9,4 +9,5 @@ data class DriveInfoState(
     val to: String = "",
     val price: Int = 0,
     val numberPlaces: Int = 0,
+    val driveId: Int = 0,
     )

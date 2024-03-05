@@ -35,10 +35,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.etu.ridesharing.data.DataDriveInfoList
 import com.etu.ridesharing.data.TravelHistoryList
+import com.etu.ridesharing.data.DataDriveList
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.screens.AboutScreen
+import com.etu.ridesharing.ui.screens.DriveScreen
 import com.etu.ridesharing.ui.screens.FindCompanionScreen
 import com.etu.ridesharing.ui.screens.MyDrivesScreen
 import com.etu.ridesharing.ui.screens.TravelHistory
@@ -54,7 +58,8 @@ enum class RidesharingScreen(@StringRes val title: Int) {
     DriveHistory(title = R.string.drive_history),
     Support(title = R.string.support),
     About(title = R.string.about),
-    Admin(title = R.string.admin)
+    Admin(title = R.string.admin),
+    Drive(title = R.string.drive),
 }
 
 
@@ -93,9 +98,10 @@ fun RidesharingApp(
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentScreen = RidesharingScreen.valueOf(
-        backStackEntry?.destination?.route ?: RidesharingScreen.Primary.name
+        backStackEntry?.destination?.route?.substringBefore("?") ?: RidesharingScreen.Primary.name
     )
     var myDrivesList by remember { mutableStateOf(DataDriveInfoList.driveList) }
+    var driveList by remember { mutableStateOf(DataDriveList.driveList) }
     fun removeDriveInfo(driveInfo: DriveInfoModel) {
         myDrivesList = myDrivesList.toMutableList().apply { remove(driveInfo) }
     }
@@ -109,7 +115,7 @@ fun RidesharingApp(
             ModalDrawerSheet {
                 Column() {
                     RidesharingScreen.values().forEach { screen ->
-                        if(screen.name !== RidesharingScreen.Primary.name){
+                        if(screen.name !== RidesharingScreen.Primary.name && screen.name !== RidesharingScreen.Drive.name){
                             Text(
                                 text = stringResource(screen.title),
                                 modifier = Modifier
@@ -173,7 +179,11 @@ fun RidesharingApp(
                 )*/
                 }
                 composable(route = RidesharingScreen.FindCompanion.name) {
-                    FindCompanionScreen(companionDrivesList = myDrivesList)
+                    println(RidesharingScreen.Drive.name)
+
+                    FindCompanionScreen(companionDrivesList = myDrivesList, onItemClick = { selectedDriveId ->
+                        navController.navigate("${RidesharingScreen.Drive.name}?driveId=${selectedDriveId}")
+                    })
                     /*val context = LocalContext.current
                 SelectOptionScreen(
                     subtotal = uiState.price,
@@ -221,6 +231,11 @@ fun RidesharingApp(
                 }
                 composable(route = RidesharingScreen.About.name) {
                     AboutScreen()
+                }
+                composable(route= "Drive?driveId={driveId}",arguments = listOf(navArgument("driveId") { defaultValue = "" })){ backStackEntry ->
+                    //val driveId = Integer.parseInt(backStackEntry.arguments?.getString("driveId"))
+                    val driveId = backStackEntry.arguments?.getString("driveId")
+                    DriveScreen(driveModel = driveList[Integer.parseInt(driveId)])
                 }
             }
         }

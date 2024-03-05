@@ -38,6 +38,7 @@ import java.util.Calendar
 
 @Composable
 fun FindCompanionCard(
+    onItemClick: (Int) -> Unit,
     driveInfoModel: DriveInfoModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
@@ -63,7 +64,7 @@ fun FindCompanionCard(
             Row(
 
             ){
-                Button(onClick = {  }, modifier = Modifier.size(width = 200.dp, height = 60.dp).padding(start = 20.dp, top = 10.dp)) {
+                Button(onClick = {onItemClick(uiState.driveId)} , modifier = Modifier.size(width = 200.dp, height = 60.dp).padding(start = 20.dp, top = 10.dp)) {
                     Text("Просмотреть")
                 }
             }
