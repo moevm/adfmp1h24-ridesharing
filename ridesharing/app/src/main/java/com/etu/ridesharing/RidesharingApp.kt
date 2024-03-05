@@ -35,7 +35,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.data.DataDriveInfoList
+import com.etu.ridesharing.data.DataProfileCarInfoModel
+import com.etu.ridesharing.models.CarInfoModel
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.screens.AboutScreen
 import com.etu.ridesharing.ui.screens.EditProfileScreen
@@ -102,6 +105,13 @@ fun RidesharingApp(
     fun removeDriveInfo(driveInfo: DriveInfoModel) {
         myDrivesList = myDrivesList.toMutableList().apply { remove(driveInfo) }
     }
+    var myCarsList by remember { mutableStateOf(DataProfileCarInfoModel.carList) } // Создание списка машин
+    fun removeCarInfo(carInfo: CarInfoState) {
+        myCarsList = myCarsList.toMutableList().apply {
+            val carToRemove = find { it == carInfo }
+            remove(carToRemove)
+        }
+    }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
@@ -165,7 +175,10 @@ fun RidesharingApp(
                     //ProfileScreen(
                     //    editProfileClick = {navController.navigate()}
                    // )
-                    ProfileScreen(editProfileClick = {navController.navigate(RidesharingScreen.EditProfile.name)})
+                    ProfileScreen(
+                        editProfileClick = {navController.navigate(RidesharingScreen.EditProfile.name)},
+                        myCarsList = myCarsList, // Передача списка машин
+                        onRemoveCar = { carInfo -> removeCarInfo(carInfo) },) // Передача функции удаления машины
                 }
                 composable(route = RidesharingScreen.Primary.name) {
                     RegistrationScreen(onButtonClick = {navController.navigate(RidesharingScreen.FindCompanion.name) })

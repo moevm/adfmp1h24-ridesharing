@@ -2,7 +2,7 @@ package com.etu.ridesharing.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -10,14 +10,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.etu.ridesharing.R
+import com.etu.ridesharing.data.CarInfoState
+import com.etu.ridesharing.models.CarInfoModel
+import com.etu.ridesharing.ui.components.ProfileCarCard
 
 @Composable
 fun ProfileScreen(
     editProfileClick: () -> Unit,
+    myCarsList: MutableList<CarInfoState>, // Список автомобилей
+    onRemoveCar: (CarInfoState) -> Unit, // Функция для удаления автомобиля
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = Modifier
@@ -49,25 +54,46 @@ fun ProfileScreen(
             modifier = Modifier.fillMaxWidth(),
             readOnly = true
         )
-        Column(
+
+        // Отображение списка карточек автомобилей в Box
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .weight(1f)
         ) {
-            Button(
-                onClick = { },
-                modifier = Modifier.padding(vertical = 8.dp)
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Добавить машину", fontSize = 18.sp)
+                items(myCarsList.size) { carIndex ->
+                    if (carIndex > 0) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+                    ProfileCarCard(
+                        carInfoState = myCarsList[carIndex], // Передача состояния автомобиля
+                        modifier = modifier,
+                        onEditItem = {},
+                        onDeleteItem = { onRemoveCar(myCarsList[carIndex]) }, // Передача функции удаления автомобиля
+                    )
+                }
             }
-            Button(
-                onClick = editProfileClick,
-                modifier = Modifier.padding(vertical = 8.dp)
-            ) {
-                Text(text = "Редактировать профиль", fontSize = 18.sp)
-            }
+        }
+
+        // Кнопка для редактирования профиля
+        Button(
+            onClick = editProfileClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+        ) {
+            Text(text = "Редактировать профиль", fontSize = 18.sp)
+        }
+        Button(
+            onClick = {},
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "Добавить автомобиль", fontSize = 18.sp)
         }
     }
 }
