@@ -28,15 +28,18 @@ fun TravelHistory(
         .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        LazyColumn(modifier = Modifier.padding(top = 32.dp)) {
+        LazyColumn(
+            modifier = modifier.padding(top = 32.dp)
+        ) {
             items(travelList.travelList.size) { driveIndex ->
                 if (driveIndex > 0) {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 TravelHistoryCard(
                     travel = travelList.travelList[driveIndex],
-                    modifier = modifier
-                        .size(width = 350.dp, height = 150.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
                 )
             }
         }

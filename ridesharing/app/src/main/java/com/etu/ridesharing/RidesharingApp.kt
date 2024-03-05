@@ -99,6 +99,8 @@ fun RidesharingApp(
     fun removeDriveInfo(driveInfo: DriveInfoModel) {
         myDrivesList = myDrivesList.toMutableList().apply { remove(driveInfo) }
     }
+    val travelList by remember { mutableStateOf(TravelHistoryList) }
+
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
@@ -210,7 +212,7 @@ fun RidesharingApp(
                 )*/
                 }
                 composable(route = RidesharingScreen.DriveHistory.name) {
-                    TravelHistory(travelList = TravelHistoryList)
+                    TravelHistory(travelList = travelList)
                 }
                 composable(route = RidesharingScreen.Support.name) {
                 }
