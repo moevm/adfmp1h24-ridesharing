@@ -2,8 +2,10 @@ package com.etu.ridesharing.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
@@ -20,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -27,10 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
 import com.etu.ridesharing.data.CarInfoState
+import com.etu.ridesharing.models.CarInfoModel
 
 @Composable
 fun ProfileCarCard(
-    carInfoState: CarInfoState, // Состояние информации об автомобиле
+    carInfoModel: CarInfoModel, // Модель информации об автомобиле
     onDeleteItem: () -> Unit, // Функция для удаления автомобиля
     onEditItem: () -> Unit, // Функция для редактирования автомобиля
     modifier: Modifier = Modifier
@@ -45,23 +49,36 @@ fun ProfileCarCard(
         }
     }
     Card(modifier = modifier) {
-        Row(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
+        val uiState by carInfoModel.uiState.collectAsState()
+        Row(
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+        ) {
             Column {
-                Text(text = stringResource(id = R.string.mark, carInfoState.mark))
-                Text(text = stringResource(id = R.string.number, carInfoState.number))
-                Text(text = stringResource(id = R.string.color, carInfoState.color))
+                Text(text = stringResource(id = R.string.mark, uiState.mark))
+                Text(text = stringResource(id = R.string.number, uiState.number))
+                Text(text = stringResource(id = R.string.color, uiState.color))
             }
-            Column {
-                IconButton(onClick = onDeleteItem) {
+            Column(
+                horizontalAlignment = Alignment.End,
+                modifier = Modifier.fillMaxHeight().fillMaxWidth(0.7f)
+            ) {
+                IconButton(
+                    onClick = onDeleteItem,
+                    modifier = Modifier.size(36.dp)
+                ) {
                     Icon(Icons.Outlined.Close, contentDescription = "Удалить")
                 }
-                IconButton(onClick = { openAlertDialog.value = true }) {
+                IconButton(
+                    onClick = { openAlertDialog.value = true },
+                    modifier = Modifier.size(36.dp)
+                ) {
                     Icon(Icons.Outlined.Edit, contentDescription = "Редактировать")
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun CarDialog(

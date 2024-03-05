@@ -18,14 +18,13 @@ import com.etu.ridesharing.R
 import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.models.CarInfoModel
 import com.etu.ridesharing.ui.components.CarDialog
-import com.etu.ridesharing.ui.components.MyDriveDialog
 import com.etu.ridesharing.ui.components.ProfileCarCard
 
 @Composable
 fun ProfileScreen(
     editProfileClick: () -> Unit,
-    myCarsList: MutableList<CarInfoState>, // Список автомобилей
-    onRemoveCar: (CarInfoState) -> Unit, // Функция для удаления автомобиля
+    myCarsList: MutableList<CarInfoModel>, // Список автомобилей
+    onRemoveCar: (CarInfoModel) -> Unit, // Функция для удаления автомобиля
     //openDialog: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -85,7 +84,7 @@ fun ProfileScreen(
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                     ProfileCarCard(
-                        carInfoState = myCarsList[carIndex], // Передача состояния автомобиля
+                        carInfoModel = myCarsList[carIndex], // Передача состояния автомобиля
                         modifier = modifier,
                         onEditItem = {},
                         onDeleteItem = { onRemoveCar(myCarsList[carIndex]) }, // Передача функции удаления автомобиля

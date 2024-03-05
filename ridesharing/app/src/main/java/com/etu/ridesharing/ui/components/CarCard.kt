@@ -24,16 +24,13 @@ fun CarCard(
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier){
             Row(modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_medium))){
-                Text(text = stringResource(id = R.string.mark))
-                Text(text = carInfo.mark)
+                Text(text = stringResource(id = R.string.mark,carInfo.mark))
             }
             Row(modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_medium))){
-                Text(text = stringResource(id = R.string.number))
-                Text(text = carInfo.number)
+                Text(text = stringResource(id = R.string.number,carInfo.number))
             }
             Row(modifier = Modifier.padding(start = dimensionResource(R.dimen.padding_medium))){
-                Text(text = stringResource(id = R.string.color))
-                Text(text = carInfo.color)
+                Text(text = stringResource(id = R.string.color,carInfo.color))
             }
         }
         

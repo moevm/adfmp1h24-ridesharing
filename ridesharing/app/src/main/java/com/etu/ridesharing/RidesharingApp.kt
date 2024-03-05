@@ -35,7 +35,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.data.DataDriveInfoList
 import com.etu.ridesharing.data.DataProfileCarInfoModel
 import com.etu.ridesharing.models.CarInfoModel
@@ -106,10 +105,10 @@ fun RidesharingApp(
         myDrivesList = myDrivesList.toMutableList().apply { remove(driveInfo) }
     }
     var myCarsList by remember { mutableStateOf(DataProfileCarInfoModel.carList) } // Создание списка машин
-    fun removeCarInfo(carInfo: CarInfoState) {
+    fun removeCarInfo(carInfo: CarInfoModel) {
         myCarsList = myCarsList.toMutableList().apply {
-            val carToRemove = find { it == carInfo }
-            remove(carToRemove)
+            //val carToRemove = find { it == carInfo }
+            remove(carInfo)
         }
     }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
