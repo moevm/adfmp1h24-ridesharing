@@ -2,8 +2,10 @@ package com.etu.ridesharing.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,7 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
-import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.models.CarInfoModel
 
 @Composable
@@ -125,10 +126,13 @@ fun CarDialog(
                         color = it
                     },
                 )
-                Button(onClick = {  }, modifier = Modifier.padding(top = 16.dp)) {
+                Spacer(modifier = Modifier.padding(vertical = 8.dp))
+                Button(onClick = { onDismissRequest() }, modifier = Modifier.align(Alignment.CenterHorizontally).height(50.dp)) {
                     Text("Сохранить")
                 }
             }
         }
     }
 }
+
+

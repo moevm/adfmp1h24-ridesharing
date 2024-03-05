@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.etu.ridesharing.R
 import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.models.CarInfoModel

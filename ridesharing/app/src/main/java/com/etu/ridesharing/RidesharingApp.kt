@@ -201,7 +201,7 @@ fun RidesharingApp(
 
                 }
                 composable(route = RidesharingScreen.EditProfile.name){
-                    EditProfileScreen()
+                    EditProfileScreen(navController = navController)
                 }
                 composable(route = RidesharingScreen.Support.name) {
                 }

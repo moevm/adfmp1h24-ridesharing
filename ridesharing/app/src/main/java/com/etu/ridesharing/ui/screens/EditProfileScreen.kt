@@ -16,10 +16,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.etu.ridesharing.R
 
 @Composable
-fun EditProfileScreen() {
+fun EditProfileScreen(navController: NavController) {
     val firstNameState = remember { mutableStateOf("") }
     val lastNameState = remember { mutableStateOf("") }
     val middleNameState = remember { mutableStateOf("") }
@@ -78,7 +79,7 @@ fun EditProfileScreen() {
             verticalArrangement = Arrangement.Bottom
         ) {
             Button(
-                onClick = { },
+                onClick = { navController.popBackStack() },
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
             ) {
                 Text(text = "Сохранить изменения", fontSize = 18.sp)
