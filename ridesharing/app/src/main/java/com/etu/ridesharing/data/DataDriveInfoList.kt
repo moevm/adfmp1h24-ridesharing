@@ -11,6 +11,7 @@ object DataDriveInfoList {
             to = "Астана",
             price = 1500,
             numberPlaces = 2,
+            driveId = 0,
         )),
         DriveInfoModel(DriveInfoState(
             driveDate = "02.02.24",
@@ -19,6 +20,7 @@ object DataDriveInfoList {
             to = "Актобе",
             price = 2000,
             numberPlaces = 2,
+            driveId = 1,
         )),
         DriveInfoModel(DriveInfoState(
             driveDate = "03.02.24",
@@ -27,6 +29,7 @@ object DataDriveInfoList {
             to = "Тараз",
             price = 2500,
             numberPlaces = 3,
+            driveId = 2,
         )),
         DriveInfoModel(DriveInfoState(
             driveDate = "03.02.24",
@@ -35,6 +38,7 @@ object DataDriveInfoList {
             to = "Туркестан",
             price = 1000,
             numberPlaces = 2,
+            driveId = 3,
         )),
         DriveInfoModel(DriveInfoState(
             driveDate = "04.02.24",
@@ -43,6 +47,7 @@ object DataDriveInfoList {
             to = "Семей",
             price = 1200,
             numberPlaces = 1,
+            driveId = 4,
         )),
         DriveInfoModel(DriveInfoState(
             driveDate = "05.02.24",
@@ -51,6 +56,7 @@ object DataDriveInfoList {
             to = "Костанай",
             price = 800,
             numberPlaces = 3,
+            driveId = 5,
         )),
         DriveInfoModel(DriveInfoState(
             driveDate = "06.02.24",
@@ -59,6 +65,7 @@ object DataDriveInfoList {
             to = "Астана",
             price = 1400,
             numberPlaces = 2,
+            driveId = 6,
         )),
         DriveInfoModel(DriveInfoState(
             driveDate = "06.02.24",
@@ -67,6 +74,7 @@ object DataDriveInfoList {
             to = "Алма-Ата",
             price = 700,
             numberPlaces = 3,
+            driveId = 7,
         )),
         DriveInfoModel(DriveInfoState(
             driveDate = "06.02.24",
@@ -75,6 +83,7 @@ object DataDriveInfoList {
             to = "Туркестан",
             price = 1000,
             numberPlaces = 2,
+            driveId = 8,
         )),
         DriveInfoModel(DriveInfoState(
             driveDate = "08.02.24",
@@ -83,6 +92,7 @@ object DataDriveInfoList {
             to = "Караганда",
             price = 1600,
             numberPlaces = 2,
+            driveId = 9,
         )),
     )
 }
