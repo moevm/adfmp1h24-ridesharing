@@ -24,9 +24,9 @@ fun TravelHistoryCard(
 ){
     Card(modifier = Modifier.fillMaxWidth(0.9f)) {
         Column(modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(fontSize = 18.sp,text = stringResource(id = R.string.date_and_time, travel.driveDate,travel.driveTime), modifier = Modifier.fillMaxWidth().padding(top=8.dp), textAlign= TextAlign.Center)
-            Text(fontSize = 18.sp,text = stringResource(id = R.string.companionCardPrice,travel.price), modifier = Modifier.padding(top = 16.dp, bottom = 16.dp).fillMaxWidth(), textAlign= TextAlign.Center)
-            Text(fontSize = 18.sp,text = stringResource(id = R.string.companionCardCities,travel.from,travel.to), modifier = Modifier.fillMaxWidth().padding(bottom=8.dp), textAlign= TextAlign.Center)
+            Text(fontSize = 26.sp,text = stringResource(id = R.string.date_and_time, travel.driveDate,travel.driveTime), modifier = Modifier.fillMaxWidth().padding(top=8.dp), textAlign= TextAlign.Center)
+            Text(fontSize = 26.sp,text = stringResource(id = R.string.companionCardPrice,travel.price), modifier = Modifier.padding(top = 16.dp, bottom = 16.dp).fillMaxWidth(), textAlign= TextAlign.Center)
+            Text(fontSize = 26.sp,text = stringResource(id = R.string.companionCardCities,travel.from,travel.to), modifier = Modifier.fillMaxWidth().padding(bottom=8.dp), textAlign= TextAlign.Center)
         }
     }
 }
