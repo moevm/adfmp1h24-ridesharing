@@ -17,15 +17,16 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.etu.ridesharing.R
 import com.etu.ridesharing.data.CarInfoState
+import com.etu.ridesharing.data.UserState
 import com.etu.ridesharing.models.CarInfoModel
 import com.etu.ridesharing.ui.components.CarDialog
 import com.etu.ridesharing.ui.components.ProfileCarCard
 
 @Composable
 fun ProfileScreen(
+    user: UserState,
     editProfileClick: () -> Unit,
-    myCarsList: MutableList<CarInfoModel>, // Список автомобилей
-    onRemoveCar: (CarInfoModel) -> Unit, // Функция для удаления автомобиля
+    onRemoveCar: (CarInfoState) -> Unit, // Функция для удаления автомобиля
     //openDialog: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -57,13 +58,13 @@ fun ProfileScreen(
             )
         }
         TextField(
-            value = "Гость",
+            value = "${user.name} ${user.patronymic} ${user.surname}",
             onValueChange = { },
             modifier = Modifier.fillMaxWidth(),
             readOnly = true
         )
         TextField(
-            value = "Тел.:88005553535",
+            value = "Тел.: ${user.phoneNumber}",
             onValueChange = { },
             modifier = Modifier.fillMaxWidth(),
             readOnly = true
@@ -80,15 +81,15 @@ fun ProfileScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(myCarsList.size) { carIndex ->
+                items(user.cars.size) { carIndex ->
                     if (carIndex > 0) {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                     ProfileCarCard(
-                        carInfoModel = myCarsList[carIndex], // Передача состояния автомобиля
+                        carInfoModel = CarInfoModel(user.cars[carIndex]), // Передача состояния автомобиля
                         modifier = modifier,
                         onEditItem = {},
-                        onDeleteItem = { onRemoveCar(myCarsList[carIndex]) }, // Передача функции удаления автомобиля
+                        onDeleteItem = { onRemoveCar(user.cars[carIndex]) }, // Передача функции удаления автомобиля
                     )
                 }
             }
