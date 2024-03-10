@@ -220,7 +220,7 @@ fun RidesharingApp(
                     TravelHistory(travelList = travelList)
                 }
                 composable(route = RidesharingScreen.EditProfile.name){
-                    EditProfileScreen(navController = navController)
+                    EditProfileScreen(onBackStrack = { navController.popBackStack() }, userState = currentUser)
                 }
                 composable(route = RidesharingScreen.Support.name) {
                     SupportDialog(messagesList = messageList)

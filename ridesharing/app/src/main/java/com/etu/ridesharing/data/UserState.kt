@@ -3,9 +3,9 @@ package com.etu.ridesharing.data
 data class UserState (
     var cars: MutableList<CarInfoState> = mutableListOf(),
     var userDrives: MutableList<DriveInfoState> = mutableListOf(),
-    val historyDrives: MutableList<TravelHistoryState> = mutableListOf(),
-    val name: String = "",
-    val surname: String = "",
-    val patronymic: String = "",
-    val phoneNumber: String = "",
+    var historyDrives: MutableList<TravelHistoryState> = mutableListOf(),
+    var name: String = "",
+    var surname: String = "",
+    var patronymic: String = "",
+    var phoneNumber: String = "",
         )
