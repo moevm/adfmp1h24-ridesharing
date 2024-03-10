@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,12 +23,12 @@ import com.etu.ridesharing.R
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.components.MyDriveCard
 import com.etu.ridesharing.ui.components.MyDriveDialog
-import androidx.compose.foundation.layout.padding
+import com.etu.ridesharing.data.DriveInfoState
 
 @Composable
 fun MyDrivesScreen(
-    myDrivesList: MutableList<DriveInfoModel>,
-    onRemoveDrive: (DriveInfoModel) -> Unit,
+    myDrivesList: MutableList<DriveInfoState>,
+    onRemoveDrive: (DriveInfoState) -> Unit,
     openDialog: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -60,7 +58,7 @@ fun MyDrivesScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 MyDriveCard(
-                    driveInfoModel = myDrivesList[driveIndex],
+                    driveInfoModel = DriveInfoModel(myDrivesList[driveIndex]),
                     modifier = modifier,
                     onEditItem = {},
                     onDeleteItem = { onRemoveDrive(myDrivesList[driveIndex]) },

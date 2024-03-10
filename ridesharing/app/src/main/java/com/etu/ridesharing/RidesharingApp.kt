@@ -35,8 +35,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.data.DataDriveInfoList
 import com.etu.ridesharing.data.DataProfileCarInfoModel
 import com.etu.ridesharing.models.CarInfoModel
@@ -46,6 +46,8 @@ import com.etu.ridesharing.ui.screens.RegistrationScreen
 import com.etu.ridesharing.data.MessagesList
 import com.etu.ridesharing.data.TravelHistoryList
 import com.etu.ridesharing.data.DataDriveList
+import com.etu.ridesharing.data.DriveInfoState
+import com.etu.ridesharing.data.UsersList
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.screens.AboutScreen
 import com.etu.ridesharing.ui.screens.DriveScreen
@@ -109,14 +111,16 @@ fun RidesharingApp(
     val currentScreen = RidesharingScreen.valueOf(
         backStackEntry?.destination?.route?.substringBefore("?") ?: RidesharingScreen.Primary.name
     )
+    var usersList by remember { mutableStateOf(UsersList.usersList) }
+    val currentUser = usersList[0]
     var myDrivesList by remember { mutableStateOf(DataDriveInfoList.driveList) }
     var driveList by remember { mutableStateOf(DataDriveList.driveList) }
-    fun removeDriveInfo(driveInfo: DriveInfoModel) {
-        myDrivesList = myDrivesList.toMutableList().apply { remove(driveInfo) }
+    fun removeDriveInfo(driveInfo: DriveInfoState) {
+        currentUser.userDrives = currentUser.userDrives.toMutableList().apply { remove(driveInfo) }//myDrivesList.toMutableList().apply { remove(driveInfo) }
     }
     var myCarsList by remember { mutableStateOf(DataProfileCarInfoModel.carList) } // Создание списка машин
-    fun removeCarInfo(carInfo: CarInfoModel) {
-        myCarsList = myCarsList.toMutableList().apply {
+    fun removeCarInfo(carInfo: CarInfoState) {
+        currentUser.cars = currentUser.cars.toMutableList().apply {
             //val carToRemove = find { it == carInfo }
             remove(carInfo)
         }
@@ -187,8 +191,8 @@ fun RidesharingApp(
                     //    editProfileClick = {navController.navigate()}
                    // )
                     ProfileScreen(
+                        user = currentUser,
                         editProfileClick = {navController.navigate(RidesharingScreen.EditProfile.name)},
-                        myCarsList = myCarsList, // Передача списка машин
                         onRemoveCar = { carInfo -> removeCarInfo(carInfo) },) // Передача функции удаления машины
                 }
                 composable(route = RidesharingScreen.Primary.name) {
@@ -200,13 +204,15 @@ fun RidesharingApp(
                     })
                 }
                 composable(route = RidesharingScreen.CreateDrive.name) {
-                    MyDrivesScreen(myDrivesList = myDrivesList,
+                    MyDrivesScreen(
+                        myDrivesList = myDrivesList,
                         onRemoveDrive = { driveInfo -> removeDriveInfo(driveInfo) },
                         openDialog = true,
                     )
                 }
                 composable(route = RidesharingScreen.MyDrives.name) {
-                    MyDrivesScreen(myDrivesList = myDrivesList,
+                    MyDrivesScreen(
+                        myDrivesList = myDrivesList,
                         onRemoveDrive = { driveInfo -> removeDriveInfo(driveInfo) }
                     )
                 }
@@ -214,7 +220,7 @@ fun RidesharingApp(
                     TravelHistory(travelList = travelList)
                 }
                 composable(route = RidesharingScreen.EditProfile.name){
-                    EditProfileScreen(navController = navController)
+                    EditProfileScreen(onBackStrack = { navController.popBackStack() }, userState = currentUser)
                 }
                 composable(route = RidesharingScreen.Support.name) {
                     SupportDialog(messagesList = messageList)

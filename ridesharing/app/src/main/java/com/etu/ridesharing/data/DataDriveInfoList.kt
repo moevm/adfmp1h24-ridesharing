@@ -3,8 +3,8 @@ package com.etu.ridesharing.data
 import com.etu.ridesharing.models.DriveInfoModel
 
 object DataDriveInfoList {
-    val driveList = mutableListOf<DriveInfoModel>(
-        DriveInfoModel(DriveInfoState(
+    val driveList = mutableListOf<DriveInfoState>(
+        DriveInfoState(
             driveDate = "01.02.24",
             driveTime =  "21:30",
             from = "Алма-Ата",
@@ -12,8 +12,8 @@ object DataDriveInfoList {
             price = 1500,
             numberPlaces = 2,
             driveId = 0,
-        )),
-        DriveInfoModel(DriveInfoState(
+        ),
+        DriveInfoState(
             driveDate = "02.02.24",
             driveTime =  "19:00",
             from = "Астана",
@@ -21,8 +21,8 @@ object DataDriveInfoList {
             price = 2000,
             numberPlaces = 2,
             driveId = 1,
-        )),
-        DriveInfoModel(DriveInfoState(
+        ),
+        DriveInfoState(
             driveDate = "03.02.24",
             driveTime =  "15:30",
             from = "Караганда",
@@ -30,8 +30,8 @@ object DataDriveInfoList {
             price = 2500,
             numberPlaces = 3,
             driveId = 2,
-        )),
-        DriveInfoModel(DriveInfoState(
+        ),
+        DriveInfoState(
             driveDate = "03.02.24",
             driveTime =  "12:30",
             from = "Костанай",
@@ -39,8 +39,8 @@ object DataDriveInfoList {
             price = 1000,
             numberPlaces = 2,
             driveId = 3,
-        )),
-        DriveInfoModel(DriveInfoState(
+        ),
+        DriveInfoState(
             driveDate = "04.02.24",
             driveTime =  "16:30",
             from = "Актау",
@@ -48,8 +48,8 @@ object DataDriveInfoList {
             price = 1200,
             numberPlaces = 1,
             driveId = 4,
-        )),
-        DriveInfoModel(DriveInfoState(
+        ),
+        DriveInfoState(
             driveDate = "05.02.24",
             driveTime =  "13:00",
             from = "Семей",
@@ -57,8 +57,8 @@ object DataDriveInfoList {
             price = 800,
             numberPlaces = 3,
             driveId = 5,
-        )),
-        DriveInfoModel(DriveInfoState(
+        ),
+        DriveInfoState(
             driveDate = "06.02.24",
             driveTime =  "11:00",
             from = "Костанай",
@@ -66,8 +66,8 @@ object DataDriveInfoList {
             price = 1400,
             numberPlaces = 2,
             driveId = 6,
-        )),
-        DriveInfoModel(DriveInfoState(
+        ),
+        DriveInfoState(
             driveDate = "06.02.24",
             driveTime =  "15:30",
             from = "Актобе",
@@ -75,8 +75,8 @@ object DataDriveInfoList {
             price = 700,
             numberPlaces = 3,
             driveId = 7,
-        )),
-        DriveInfoModel(DriveInfoState(
+        ),
+        DriveInfoState(
             driveDate = "06.02.24",
             driveTime =  "16:30",
             from = "Алма-Ата",
@@ -84,8 +84,8 @@ object DataDriveInfoList {
             price = 1000,
             numberPlaces = 2,
             driveId = 8,
-        )),
-        DriveInfoModel(DriveInfoState(
+        ),
+        DriveInfoState(
             driveDate = "08.02.24",
             driveTime =  "10:30",
             from = "Туркестан",
@@ -93,6 +93,6 @@ object DataDriveInfoList {
             price = 1600,
             numberPlaces = 2,
             driveId = 9,
-        )),
+        ),
     )
 }

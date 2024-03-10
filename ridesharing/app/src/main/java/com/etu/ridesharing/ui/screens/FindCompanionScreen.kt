@@ -1,7 +1,6 @@
 package com.etu.ridesharing.ui.screens
 
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,19 +13,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,19 +34,18 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
 import com.etu.ridesharing.data.DataCitiesList
+import com.etu.ridesharing.data.DriveInfoState
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.components.AutoCompleteTextField
 import com.etu.ridesharing.ui.components.CustomTextField
 import com.etu.ridesharing.ui.components.FindCompanionCard
-import com.etu.ridesharing.ui.components.MyDriveCard
 
 @Composable
 fun FindCompanionScreen(
-    companionDrivesList: MutableList<DriveInfoModel>,
+    companionDrivesList: MutableList<DriveInfoState>,
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -109,7 +101,7 @@ fun FindCompanionScreen(
                     }
                     FindCompanionCard(
                         onItemClick = onItemClick,
-                        driveInfoModel = companionDrivesList[driveIndex],
+                        driveInfoModel = DriveInfoModel( companionDrivesList[driveIndex]),
                         modifier = modifier
                             .size(width = 350.dp, height = 150.dp),
                     )
