@@ -117,7 +117,7 @@ fun CarFilterDialog(
                 Column(
                     modifier = Modifier.fillMaxWidth(0.9f).padding(start = 16.dp, top = 32.dp),
                 ) {
-                    AutoCompleteTextField(
+                    /*AutoCompleteTextField(
                         label = stringResource(id = R.string.mark,""),
                         categories = listOf("Toyota", "Volkswagen", "Ford", "Hyundai", "Honda")
                     )
@@ -128,7 +128,7 @@ fun CarFilterDialog(
                     AutoCompleteTextField(
                         label = stringResource(id = R.string.color,""),
                         categories = listOf("Белый", "Чёрный", "Серый", "Красный", "Синий")
-                    )
+                    )*/
                     Button(onClick = {  }, modifier = Modifier.padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
                         Text("Применить фильтры")
                     }

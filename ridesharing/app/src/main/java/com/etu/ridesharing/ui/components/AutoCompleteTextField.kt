@@ -95,7 +95,6 @@ fun AutoCompleteTextField(
             Row(/*modifier = Modifier.fillMaxWidth()*/) {
                 TextField(
                     isError = isError,
-                    supportingText = supportingText,
                     modifier = Modifier
                        // .fillMaxWidth()
                         .height(heightTextFields)
@@ -173,6 +172,7 @@ fun AutoCompleteTextField(
                                 categories.sorted()
                             ) {
                                 CategoryItems(title = it) { title ->
+                                    onValueChange(title)
                                     category = title
                                     expanded = false
                                 }
@@ -187,7 +187,7 @@ fun AutoCompleteTextField(
         }
 
     }
-
+    supportingText()
 
 }
 

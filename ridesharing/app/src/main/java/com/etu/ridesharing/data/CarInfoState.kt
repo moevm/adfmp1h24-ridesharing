@@ -1,7 +1,10 @@
 package com.etu.ridesharing.data
 
+import java.util.UUID
+
 data class CarInfoState(
-    val mark: String = "",
-    val color: String = "",
-    val number: String = ""
+    val id: UUID? = UUID.randomUUID(),
+    var mark: String = "",
+    var color: String = "",
+    var number: String = ""
 )

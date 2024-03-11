@@ -17,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,6 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
+import com.etu.ridesharing.data.CarInfoState
+import com.etu.ridesharing.data.CarSelectOptions
 import com.etu.ridesharing.models.CarInfoModel
 
 @Composable
@@ -43,17 +46,24 @@ fun ProfileCarCard(
     onEditItem: () -> Unit, // Функция для редактирования автомобиля
     modifier: Modifier = Modifier
 ) {
+    val uiState by carInfoModel.uiState.collectAsState()
     val openAlertDialog = remember { mutableStateOf(false) }
     when {
         // ...
         openAlertDialog.value -> {
             CarDialog(
+                carState = uiState,
+                actionFunction = { color,brand,number ->
+                    uiState.color = color
+                    uiState.mark = brand
+                    uiState.number = number
+                },
                 onDismissRequest = { openAlertDialog.value = false },
             )
         }
     }
     Card(modifier = modifier) {
-        val uiState by carInfoModel.uiState.collectAsState()
+
         Row(
             modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
         ) {
@@ -88,11 +98,21 @@ fun ProfileCarCard(
 
 @Composable
 fun CarDialog(
+    actionFunction: (color: String,brand: String,number: String) -> Unit,
+    carState: CarInfoState = CarInfoState(),
     onDismissRequest: () -> Unit,
 ) {
-    var brand by rememberSaveable { mutableStateOf("") }
-    var number by rememberSaveable { mutableStateOf("") }
-    var color by rememberSaveable { mutableStateOf("") }
+    var brand by rememberSaveable { mutableStateOf(carState.mark) }
+    var number by rememberSaveable { mutableStateOf(carState.number) }
+    var color by rememberSaveable { mutableStateOf(carState.color) }
+    var isErrorBrand by rememberSaveable { mutableStateOf(false) }
+    var isErrorColor by rememberSaveable { mutableStateOf(false) }
+    var isErrorNumber by rememberSaveable { mutableStateOf(false) }
+    fun isCarNumberValid(carNumber: String) {
+        val digitsCount = carNumber.count { it.isDigit() }
+        val lettersCount = carNumber.count { it.isLetter() }
+        isErrorNumber =  !(digitsCount == 3 && lettersCount == 3 && carNumber.length == 6)
+    }
     val focusManager = LocalFocusManager.current
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
@@ -109,7 +129,7 @@ fun CarDialog(
                 Column(
                     modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp)
                 ) {
-                    CustomTextField(
+                    /*CustomTextField(
                         text = "Марка:",
                         type = "text",
                         label = { Text("Марка автомобиля") },
@@ -117,17 +137,67 @@ fun CarDialog(
                         onValueChange = {
                             brand = it
                         },
+                    )*/
+                    AutoCompleteTextField(
+                        isError = isErrorBrand,
+                        supportingText = {
+                            if (isErrorBrand) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Нужно выбрать марку автомобиля",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
+                        onValueChange = {
+                            brand = it
+                            isErrorBrand = !CarSelectOptions.marks.contains(brand)
+                                        },
+                        value = brand,
+                        label = "Марка автомобиля",
+                        categories = CarSelectOptions.marks
                     )
                     CustomTextField(
+                        isError = isErrorNumber,
+                        supportingText = {
+                            if (isErrorNumber) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Номер автомобиля должен содержать 3 цифры и 3 буквы латиницы",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
                         text = "Номер:",
                         type = "text",
                         label = { Text("Номер автомобиля") },
                         value = number,
                         onValueChange = {
+                            isCarNumberValid(it)
                             number = it
+
                         },
                     )
-                    CustomTextField(
+                    AutoCompleteTextField(
+                        isError = isErrorColor,
+                        onValueChange = {
+                            color = it
+                            isErrorColor = !CarSelectOptions.colors.contains(color)
+                                        },
+                        supportingText = {
+                            if (isErrorColor) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Нужно выбрать цвет автомобиля",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
+                        value = color,
+                        label = "Цвет автомобиля",
+                        categories = CarSelectOptions.colors
+                    )
+                    /*CustomTextField(
                         text = "Цвет: ",
                         type = "text",
                         label = { Text("Цвет автомобиля") },
@@ -135,9 +205,15 @@ fun CarDialog(
                         onValueChange = {
                             color = it
                         },
-                    )
+                    )*/
                     Spacer(modifier = Modifier.padding(vertical = 8.dp))
-                    Button(onClick = { onDismissRequest() }, modifier = Modifier
+                    Button(onClick = {
+                        if(!isErrorNumber && !isErrorBrand && !isErrorColor){
+                            actionFunction(color,brand, number)
+                            onDismissRequest()
+                        }
+
+                                     }, modifier = Modifier
                         .padding( top = 16.dp, start = 80.dp, bottom = 16.dp)) {
                         Text("Сохранить")
                     }

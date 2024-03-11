@@ -120,10 +120,7 @@ fun RidesharingApp(
     }
     var myCarsList by remember { mutableStateOf(DataProfileCarInfoModel.carList) } // Создание списка машин
     fun removeCarInfo(carInfo: CarInfoState) {
-        currentUser.cars = currentUser.cars.toMutableList().apply {
-            //val carToRemove = find { it == carInfo }
-            remove(carInfo)
-        }
+        currentUser.cars.remove(carInfo)
     }
     val travelList by remember { mutableStateOf(TravelHistoryList) }
     val messageList by remember {mutableStateOf(MessagesList)}
@@ -193,7 +190,7 @@ fun RidesharingApp(
                     ProfileScreen(
                         user = currentUser,
                         editProfileClick = {navController.navigate(RidesharingScreen.EditProfile.name)},
-                        onRemoveCar = { carInfo -> removeCarInfo(carInfo) },) // Передача функции удаления машины
+                        ) // Передача функции удаления машины
                 }
                 composable(route = RidesharingScreen.Primary.name) {
                     RegistrationScreen(onButtonClick = {navController.navigate(RidesharingScreen.FindCompanion.name) })
