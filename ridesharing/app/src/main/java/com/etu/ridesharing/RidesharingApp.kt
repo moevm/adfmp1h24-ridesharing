@@ -32,6 +32,9 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.SaverScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -47,6 +50,7 @@ import com.etu.ridesharing.data.MessagesList
 import com.etu.ridesharing.data.TravelHistoryList
 import com.etu.ridesharing.data.DataDriveList
 import com.etu.ridesharing.data.DriveInfoState
+import com.etu.ridesharing.data.UserState
 import com.etu.ridesharing.data.UsersList
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.screens.AboutScreen
@@ -71,7 +75,6 @@ enum class RidesharingScreen(@StringRes val title: Int) {
     Admin(title = R.string.admin),
     Drive(title = R.string.drive),
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -101,7 +104,6 @@ fun RidesharingAppBar(
     }
 }
 
-
 @Composable
 fun RidesharingApp(
     driveInfoModel: DriveInfoModel = viewModel(),
@@ -111,8 +113,10 @@ fun RidesharingApp(
     val currentScreen = RidesharingScreen.valueOf(
         backStackEntry?.destination?.route?.substringBefore("?") ?: RidesharingScreen.Primary.name
     )
+
     var usersList by remember { mutableStateOf(UsersList.usersList) }
-    val currentUser = usersList[0]
+    var currentUserId by rememberSaveable { mutableStateOf(usersList[0].id) }
+    var currentUser by remember { mutableStateOf(usersList.find{ it.id == currentUserId}!!)}
     var myDrivesList by remember { mutableStateOf(DataDriveInfoList.driveList) }
     var driveList by remember { mutableStateOf(DataDriveList.driveList) }
     fun removeDriveInfo(driveInfo: DriveInfoState) {
@@ -193,7 +197,22 @@ fun RidesharingApp(
                         ) // Передача функции удаления машины
                 }
                 composable(route = RidesharingScreen.Primary.name) {
-                    RegistrationScreen(onButtonClick = {navController.navigate(RidesharingScreen.FindCompanion.name) })
+                    var isErrorAuthorization  by rememberSaveable { mutableStateOf(false) }
+                    RegistrationScreen(
+                        isErrorAuthorization = isErrorAuthorization,
+                        onButtonClick = {
+                        val curUser  = usersList.find { el -> el.phoneNumber.replace("-","").replace("+","") == it }
+                            println(it)
+                        if(curUser !== null){
+                            isErrorAuthorization = false
+                            currentUserId = curUser.id
+                            currentUser = curUser
+                            navController.navigate(RidesharingScreen.FindCompanion.name)
+                        }
+                            else{
+                            isErrorAuthorization = true
+                        }
+                    })
                 }
                 composable(route = RidesharingScreen.FindCompanion.name) {
                     FindCompanionScreen(companionDrivesList = myDrivesList, onItemClick = { selectedDriveId ->
