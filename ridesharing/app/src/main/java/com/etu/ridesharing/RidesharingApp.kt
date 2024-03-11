@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -113,7 +114,7 @@ fun RidesharingApp(
         backStackEntry?.destination?.route?.substringBefore("?") ?: RidesharingScreen.Primary.name
     )
     var usersList by remember { mutableStateOf(UsersList.usersList) }
-    var currentUser: UserState = usersList[0]
+    var currentUser by remember { mutableStateOf(usersList[0])}
     var myDrivesList by remember { mutableStateOf(DataDriveInfoList.driveList) }
     var driveList by remember { mutableStateOf(DataDriveList.driveList) }
     fun removeDriveInfo(driveInfo: DriveInfoState) {
@@ -194,12 +195,19 @@ fun RidesharingApp(
                         ) // Передача функции удаления машины
                 }
                 composable(route = RidesharingScreen.Primary.name) {
-                    RegistrationScreen(onButtonClick = {
-                        it ->
-                        val curUser  = usersList.find { el -> el.phoneNumber == it }
+                    var isErrorAuthorization  by rememberSaveable { mutableStateOf(false) }
+                    RegistrationScreen(
+                        isErrorAuthorization = isErrorAuthorization,
+                        onButtonClick = {
+                        val curUser  = usersList.find { el -> el.phoneNumber.replace("-","").replace("+","") == it }
+                            println(it)
                         if(curUser !== null){
+                            isErrorAuthorization = false
                             currentUser = curUser
                             navController.navigate(RidesharingScreen.FindCompanion.name)
+                        }
+                            else{
+                            isErrorAuthorization = true
                         }
                     })
                 }

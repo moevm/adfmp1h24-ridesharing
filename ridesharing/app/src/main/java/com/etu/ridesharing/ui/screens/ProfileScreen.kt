@@ -1,5 +1,6 @@
 package com.etu.ridesharing.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,6 +24,7 @@ import com.etu.ridesharing.models.CarInfoModel
 import com.etu.ridesharing.ui.components.CarDialog
 import com.etu.ridesharing.ui.components.ProfileCarCard
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun ProfileScreen(
     user: UserState,
@@ -40,11 +42,11 @@ fun ProfileScreen(
         openAlertDialog.value -> {
             CarDialog(
                 carState = carState,
-                actionFunction = {color,brand,number ->
+                actionFunction = { color, brand, number ->
                     carState.color = color
                     carState.mark = brand
                     carState.number = number
-                      user.cars.add(carState)
+                    user.cars.add(carState)
                     user.cars = carsState.value.toMutableList().apply { add(carState) }
                     carsState.value = carsState.value.toMutableList().apply { add(carState) }
                 },
@@ -100,7 +102,7 @@ fun ProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 itemsIndexed(carsState.value) { index, car ->
-                    if (index !=  0) {
+                    if (index != 0) {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                     ProfileCarCard(
@@ -125,7 +127,7 @@ fun ProfileScreen(
             Text(text = "Редактировать профиль", fontSize = 18.sp)
         }
         Button(
-            onClick = {openAlertDialog.value = true},
+            onClick = { openAlertDialog.value = true },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Добавить автомобиль", fontSize = 18.sp)
