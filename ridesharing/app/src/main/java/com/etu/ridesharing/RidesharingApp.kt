@@ -47,6 +47,7 @@ import com.etu.ridesharing.data.MessagesList
 import com.etu.ridesharing.data.TravelHistoryList
 import com.etu.ridesharing.data.DataDriveList
 import com.etu.ridesharing.data.DriveInfoState
+import com.etu.ridesharing.data.UserState
 import com.etu.ridesharing.data.UsersList
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.screens.AboutScreen
@@ -112,7 +113,7 @@ fun RidesharingApp(
         backStackEntry?.destination?.route?.substringBefore("?") ?: RidesharingScreen.Primary.name
     )
     var usersList by remember { mutableStateOf(UsersList.usersList) }
-    val currentUser = usersList[0]
+    var currentUser: UserState = usersList[0]
     var myDrivesList by remember { mutableStateOf(DataDriveInfoList.driveList) }
     var driveList by remember { mutableStateOf(DataDriveList.driveList) }
     fun removeDriveInfo(driveInfo: DriveInfoState) {
@@ -193,7 +194,14 @@ fun RidesharingApp(
                         ) // Передача функции удаления машины
                 }
                 composable(route = RidesharingScreen.Primary.name) {
-                    RegistrationScreen(onButtonClick = {navController.navigate(RidesharingScreen.FindCompanion.name) })
+                    RegistrationScreen(onButtonClick = {
+                        it ->
+                        val curUser  = usersList.find { el -> el.phoneNumber == it }
+                        if(curUser !== null){
+                            currentUser = curUser
+                            navController.navigate(RidesharingScreen.FindCompanion.name)
+                        }
+                    })
                 }
                 composable(route = RidesharingScreen.FindCompanion.name) {
                     FindCompanionScreen(companionDrivesList = myDrivesList, onItemClick = { selectedDriveId ->

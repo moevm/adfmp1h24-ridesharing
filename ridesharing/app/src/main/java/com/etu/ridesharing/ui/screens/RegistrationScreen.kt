@@ -28,11 +28,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.etu.ridesharing.R
+import com.etu.ridesharing.data.UserState
 
 
 @Composable
 fun RegistrationScreen(
-    onButtonClick: () -> Unit,
+    onButtonClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val focusManager = LocalFocusManager.current
