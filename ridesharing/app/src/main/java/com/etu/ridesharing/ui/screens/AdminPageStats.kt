@@ -1,7 +1,5 @@
 package com.etu.ridesharing.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,10 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material3.DatePicker
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,7 +21,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import com.etu.ridesharing.ui.components.CustomTextField
 import kotlin.math.abs
 
-@Composable @Preview
-fun AdminPageStats() {
-    var textFrom by rememberSaveable { mutableStateOf("") }
-    var textTo by rememberSaveable { mutableStateOf("") }
+@Composable
+fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, onChange2: (String)->Unit) {
+    //var textFrom by rememberSaveable { mutableStateOf("") }
+    //var textTo by rememberSaveable { mutableStateOf("") }
     val maxCharDate = 8
     val focusManager = LocalFocusManager.current
 
@@ -59,9 +54,7 @@ fun AdminPageStats() {
                 type = "date",
                 label = { Text("дд/мм/гггг") },
                 value = textFrom,
-                onValueChange = {
-                    if (it.length <= maxCharDate) textFrom = it
-                },
+                onValueChange = {onChange1(it)},
                 leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
             )
         }
@@ -72,9 +65,7 @@ fun AdminPageStats() {
                 type = "date",
                 label = { Text("дд/мм/гггг") },
                 value = textTo,
-                onValueChange = {
-                    if (it.length <= maxCharDate) textTo = it
-                },
+                onValueChange = {onChange2(it)},
                 leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
             )
         }
@@ -119,15 +110,11 @@ fun AdminPageStats() {
 }
 
 fun calcUsers(dateFrom : String, dateTo : String): Int {
-    if (dateFrom.isEmpty() or dateTo.isEmpty()){
-        return 36000
+    if (dateFrom.length < 8 || dateTo.length < 8){
+        return 54789
     }
-    val dateFromList = dateFrom.split("/")
-    val dateToList = dateTo.split("/")
+    val dateFromInt = dateFrom.reversed().toInt()
+    val dateToInt = dateTo.reversed().toInt()
 
-    val dayDiff = abs(dateFromList[0].toInt() - dateToList[0].toInt())
-    val monthDiff = abs(dateFromList[0].toInt() - dateToList[0].toInt())
-    val yearDiff = abs(dateFromList[0].toInt() - dateToList[0].toInt())
-
-    return (dayDiff+monthDiff+yearDiff)/100
+    return abs(dateFromInt-dateToInt) % 54789 + 345
 }
