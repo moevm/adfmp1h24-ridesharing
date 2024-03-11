@@ -40,13 +40,17 @@ import androidx.compose.ui.unit.toSize
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AutoCompleteTextField(
+    value: String,
     categories: List<String>,
     label: String,
+    isError: Boolean = false,
+    supportingText: @Composable() (() -> Unit) = {Text(text = "error")},
+    onValueChange: (String) -> Unit = {/* TO DO */},
 ) {
 
 
     var category by remember {
-        mutableStateOf("")
+        mutableStateOf(value)
     }
 
     val heightTextFields by remember {
@@ -90,6 +94,7 @@ fun AutoCompleteTextField(
 
             Row(/*modifier = Modifier.fillMaxWidth()*/) {
                 TextField(
+                    isError = isError,
                     modifier = Modifier
                        // .fillMaxWidth()
                         .height(heightTextFields)
@@ -103,6 +108,7 @@ fun AutoCompleteTextField(
                         },
                     value = category,
                     onValueChange = {
+                        onValueChange(it)
                         category = it
                         expanded = true
                     },
@@ -166,6 +172,7 @@ fun AutoCompleteTextField(
                                 categories.sorted()
                             ) {
                                 CategoryItems(title = it) { title ->
+                                    onValueChange(title)
                                     category = title
                                     expanded = false
                                 }
@@ -180,7 +187,7 @@ fun AutoCompleteTextField(
         }
 
     }
-
+    supportingText()
 
 }
 

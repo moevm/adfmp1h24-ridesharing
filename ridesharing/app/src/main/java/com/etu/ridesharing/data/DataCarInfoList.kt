@@ -1,5 +1,5 @@
 package com.etu.ridesharing.data
-
+import java.util.UUID;
 object DataCarInfoList {
     val carList = mutableListOf<CarInfoState>(
         CarInfoState(

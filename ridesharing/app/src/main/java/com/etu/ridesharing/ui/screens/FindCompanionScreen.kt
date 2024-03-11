@@ -80,7 +80,7 @@ fun FindCompanionScreen(
                 Column(
                     modifier = Modifier.weight(1.5f).padding(start = 2.dp)
                 ) {
-                    AutoCompleteTextField(categories = DataCitiesList.citiesList, label = "Откуда")
+                    //AutoCompleteTextField(categories = DataCitiesList.citiesList, label = "Откуда")
                 }
                 Column(
                     modifier = Modifier.weight(0.1f)
@@ -90,7 +90,7 @@ fun FindCompanionScreen(
                 Column(
                     modifier = Modifier.weight(1.5f).padding(end = 2.dp)
                 ) {
-                    AutoCompleteTextField(categories = DataCitiesList.citiesList, label = "Куда")
+                   // AutoCompleteTextField(categories = DataCitiesList.citiesList, label = "Куда")
                 }
 
             }

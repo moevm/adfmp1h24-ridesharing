@@ -3,6 +3,7 @@ package com.etu.ridesharing.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -26,15 +27,27 @@ import com.etu.ridesharing.ui.components.ProfileCarCard
 fun ProfileScreen(
     user: UserState,
     editProfileClick: () -> Unit,
-    onRemoveCar: (CarInfoState) -> Unit, // Функция для удаления автомобиля
+    //onRemoveCar: (CarInfoState) -> Unit, // Функция для удаления автомобиля
     //openDialog: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val openAlertDialog = remember { mutableStateOf(false) }
+    val carState = CarInfoState()
+    val carsState = remember { mutableStateOf(user.cars.toMutableList()) }
     when {
         // ...
+
         openAlertDialog.value -> {
             CarDialog(
+                carState = carState,
+                actionFunction = {color,brand,number ->
+                    carState.color = color
+                    carState.mark = brand
+                    carState.number = number
+                      user.cars.add(carState)
+                    user.cars = carsState.value.toMutableList().apply { add(carState) }
+                    carsState.value = carsState.value.toMutableList().apply { add(carState) }
+                },
                 onDismissRequest = { openAlertDialog.value = false },
             )
         }
@@ -76,20 +89,27 @@ fun ProfileScreen(
                 .fillMaxWidth()
                 .weight(1f)
         ) {
+
+            val removeCar: (CarInfoState) -> Unit = { car ->
+                carsState.value = carsState.value.toMutableList().apply { remove(car) }
+                user.cars = carsState.value.toMutableList().apply { remove(car) }
+            }
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                items(user.cars.size) { carIndex ->
-                    if (carIndex > 0) {
+                itemsIndexed(carsState.value) { index, car ->
+                    if (index !=  0) {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                     ProfileCarCard(
-                        carInfoModel = CarInfoModel(user.cars[carIndex]), // Передача состояния автомобиля
+                        carInfoModel = CarInfoModel(car),
                         modifier = modifier,
                         onEditItem = {},
-                        onDeleteItem = { onRemoveCar(user.cars[carIndex]) }, // Передача функции удаления автомобиля
+                        onDeleteItem = {
+                            removeCar(car)
+                        },
                     )
                 }
             }
