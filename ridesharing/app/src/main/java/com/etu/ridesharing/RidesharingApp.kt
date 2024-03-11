@@ -32,6 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
@@ -74,7 +76,6 @@ enum class RidesharingScreen(@StringRes val title: Int) {
     Drive(title = R.string.drive),
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RidesharingAppBar(
@@ -103,7 +104,6 @@ fun RidesharingAppBar(
     }
 }
 
-
 @Composable
 fun RidesharingApp(
     driveInfoModel: DriveInfoModel = viewModel(),
@@ -113,8 +113,10 @@ fun RidesharingApp(
     val currentScreen = RidesharingScreen.valueOf(
         backStackEntry?.destination?.route?.substringBefore("?") ?: RidesharingScreen.Primary.name
     )
+
     var usersList by remember { mutableStateOf(UsersList.usersList) }
-    var currentUser by remember { mutableStateOf(usersList[0])}
+    var currentUserId by rememberSaveable { mutableStateOf(usersList[0].id) }
+    var currentUser by remember { mutableStateOf(usersList.find{ it.id == currentUserId}!!)}
     var myDrivesList by remember { mutableStateOf(DataDriveInfoList.driveList) }
     var driveList by remember { mutableStateOf(DataDriveList.driveList) }
     fun removeDriveInfo(driveInfo: DriveInfoState) {
@@ -203,6 +205,7 @@ fun RidesharingApp(
                             println(it)
                         if(curUser !== null){
                             isErrorAuthorization = false
+                            currentUserId = curUser.id
                             currentUser = curUser
                             navController.navigate(RidesharingScreen.FindCompanion.name)
                         }
