@@ -89,7 +89,7 @@ fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, 
                     Modifier
                         .fillMaxWidth(0.3F)
                         .padding(top = 25.dp))
-                Text(text = "1",
+                Text(text = "${calcRides(textFrom, textTo)}",
                     Modifier
                         .fillMaxWidth(0.5F)
                         .padding(top = 25.dp, start = 25.dp))
@@ -99,7 +99,7 @@ fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, 
                     Modifier
                         .fillMaxWidth(0.3F)
                         .padding(top = 25.dp))
-                Text(text = "10",
+                Text(text = "${calcDistance(textFrom, textTo)}",
                     Modifier
                         .fillMaxWidth(0.5F)
                         .padding(top = 25.dp, start = 25.dp))
@@ -117,4 +117,24 @@ fun calcUsers(dateFrom : String, dateTo : String): Int {
     val dateToInt = dateTo.reversed().toInt()
 
     return abs(dateFromInt-dateToInt) % 54789 + 345
+}
+
+fun calcRides(dateFrom : String, dateTo : String): Int {
+    if (dateFrom.length < 8 || dateTo.length < 8){
+        return 3124
+    }
+    val dateFromInt = dateFrom.reversed().toInt()
+    val dateToInt = dateTo.reversed().toInt()
+
+    return (abs(dateFromInt-dateToInt) % 54789 + 345) /2
+}
+
+fun calcDistance(dateFrom : String, dateTo : String): Int {
+    if (dateFrom.length < 8 || dateTo.length < 8){
+        return 312465
+    }
+    val dateFromInt = dateFrom.reversed().toInt()
+    val dateToInt = dateTo.reversed().toInt()
+
+    return abs(dateFromInt-dateToInt)*49 + 32
 }
