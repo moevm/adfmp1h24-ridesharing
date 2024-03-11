@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material3.DatePicker
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -30,6 +31,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.etu.ridesharing.ui.components.CustomTextField
+import kotlin.math.abs
 
 @Composable @Preview
 fun AdminPageStats() {
@@ -77,20 +79,55 @@ fun AdminPageStats() {
             )
         }
 
-        Column(Modifier.fillMaxHeight().padding(top=25.dp)) {
+        Column(
+            Modifier
+                .fillMaxHeight()
+                .padding(top = 25.dp)) {
             Row {
-                Text(text = "Пользователей", Modifier.fillMaxWidth(0.3F).padding(top=25.dp))
-                Text(text = "4", Modifier.fillMaxWidth(0.5F).padding(top=25.dp, start=25.dp))
+                Text(text = "Пользователей",
+                    Modifier
+                        .fillMaxWidth(0.3F)
+                        .padding(top = 25.dp))
+                Text(text = "${calcUsers(textFrom, textTo)}",
+                    Modifier
+                        .fillMaxWidth(0.5F)
+                        .padding(top = 25.dp, start = 25.dp))
             }
             Row {
-                Text(text = "Всего поездок", Modifier.fillMaxWidth(0.3F).padding(top=25.dp))
-                Text(text = "1", Modifier.fillMaxWidth(0.5F).padding(top=25.dp, start=25.dp))
+                Text(text = "Всего поездок",
+                    Modifier
+                        .fillMaxWidth(0.3F)
+                        .padding(top = 25.dp))
+                Text(text = "1",
+                    Modifier
+                        .fillMaxWidth(0.5F)
+                        .padding(top = 25.dp, start = 25.dp))
             }
             Row {
-                Text(text = "Общий пробег", Modifier.fillMaxWidth(0.3F).padding(top=25.dp))
-                Text(text = "10", Modifier.fillMaxWidth(0.5F).padding(top=25.dp, start=25.dp))
+                Text(text = "Общий пробег",
+                    Modifier
+                        .fillMaxWidth(0.3F)
+                        .padding(top = 25.dp))
+                Text(text = "10",
+                    Modifier
+                        .fillMaxWidth(0.5F)
+                        .padding(top = 25.dp, start = 25.dp))
             }
         }
 
     }
+}
+
+fun calcUsers(dateFrom : String, dateTo : String): Int {
+    if (dateFrom.isEmpty() or dateTo.isEmpty()){
+        return 36000
+    }
+    val dateFromList = dateFrom.split("/")
+    val dateToList = dateTo.split("/")
+
+    val dayDiff = abs(dateFromList[0].toInt() - dateToList[0].toInt())
+    val monthDiff = abs(dateFromList[0].toInt() - dateToList[0].toInt())
+    val yearDiff = abs(dateFromList[0].toInt() - dateToList[0].toInt())
+
+    return (dayDiff+monthDiff+yearDiff)/100
 }
