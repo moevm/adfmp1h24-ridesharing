@@ -85,7 +85,7 @@ fun RidesharingAppBar(
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if(currentScreen.name !== RidesharingScreen.Primary.name) {
+    if (currentScreen.name !== RidesharingScreen.Primary.name) {
         Row(modifier = modifier) {
 
             TopAppBar(
@@ -116,27 +116,31 @@ fun RidesharingApp(
 
     var usersList by remember { mutableStateOf(UsersList.usersList) }
     var currentUserId by rememberSaveable { mutableStateOf(usersList[0].id) }
-    var currentUser by remember { mutableStateOf(usersList.find{ it.id == currentUserId}!!)}
+    var currentUser by remember { mutableStateOf(usersList.find { it.id == currentUserId }!!) }
     var myDrivesList by remember { mutableStateOf(DataDriveInfoList.driveList) }
     var driveList by remember { mutableStateOf(DataDriveList.driveList) }
     fun removeDriveInfo(driveInfo: DriveInfoState) {
-        currentUser.userDrives = currentUser.userDrives.toMutableList().apply { remove(driveInfo) }//myDrivesList.toMutableList().apply { remove(driveInfo) }
+        currentUser.userDrives = currentUser.userDrives.toMutableList()
+            .apply { remove(driveInfo) }//myDrivesList.toMutableList().apply { remove(driveInfo) }
     }
+
     var myCarsList by remember { mutableStateOf(DataProfileCarInfoModel.carList) } // Создание списка машин
     fun removeCarInfo(carInfo: CarInfoState) {
         currentUser.cars.remove(carInfo)
     }
+
     val travelList by remember { mutableStateOf(TravelHistoryList) }
-    val messageList by remember {mutableStateOf(MessagesList)}
+    val messageList by remember { mutableStateOf(MessagesList) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    // if(currentScreen.name !== RidesharingScreen.Primary.name) {
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
                 Column() {
                     RidesharingScreen.values().forEach { screen ->
-                        if(screen.name !== RidesharingScreen.Primary.name && screen.name !== RidesharingScreen.EditProfile.name && screen.name !== RidesharingScreen.Drive.name){
+                        if (screen.name !== RidesharingScreen.Primary.name && screen.name !== RidesharingScreen.EditProfile.name && screen.name !== RidesharingScreen.Drive.name) {
                             Text(
                                 text = stringResource(screen.title),
                                 modifier = Modifier
@@ -148,7 +152,7 @@ fun RidesharingApp(
                                         }
                                     }
                             )
-                            if(screen.name == RidesharingScreen.Profile.name){
+                            if (screen.name == RidesharingScreen.Profile.name) {
                                 Divider()
                             }
 
@@ -159,25 +163,26 @@ fun RidesharingApp(
             /**/
 
         },
+        gesturesEnabled = !(currentScreen.name === RidesharingScreen.Primary.name)
     ) {
         Scaffold(
             topBar = {
                 var curScreen = currentScreen
-                if(currentScreen.name === RidesharingScreen.CreateDrive.name){
-                        curScreen = RidesharingScreen.MyDrives
+                if (currentScreen.name === RidesharingScreen.CreateDrive.name) {
+                    curScreen = RidesharingScreen.MyDrives
                 }
-                    RidesharingAppBar(
-                        onClickMenu = {
-                            scope.launch {
-                                drawerState.apply {
-                                    if (isClosed) open() else close()
-                                }
+                RidesharingAppBar(
+                    onClickMenu = {
+                        scope.launch {
+                            drawerState.apply {
+                                if (isClosed) open() else close()
                             }
-                        },
-                        currentScreen = curScreen,
-                        canNavigateBack = false,
-                        navigateUp = { /* TODO: implement back navigation */ }
-                    )
+                        }
+                    },
+                    currentScreen = curScreen,
+                    canNavigateBack = false,
+                    navigateUp = { /* TODO: implement back navigation */ }
+                )
 
             }
         ) { innerPadding ->
@@ -190,34 +195,37 @@ fun RidesharingApp(
                 composable(route = RidesharingScreen.Profile.name) {
                     //ProfileScreen(
                     //    editProfileClick = {navController.navigate()}
-                   // )
+                    // )
                     ProfileScreen(
                         user = currentUser,
-                        editProfileClick = {navController.navigate(RidesharingScreen.EditProfile.name)},
-                        ) // Передача функции удаления машины
+                        editProfileClick = { navController.navigate(RidesharingScreen.EditProfile.name) },
+                    ) // Передача функции удаления машины
                 }
                 composable(route = RidesharingScreen.Primary.name) {
-                    var isErrorAuthorization  by rememberSaveable { mutableStateOf(false) }
+                    var isErrorAuthorization by rememberSaveable { mutableStateOf(false) }
                     RegistrationScreen(
                         isErrorAuthorization = isErrorAuthorization,
                         onButtonClick = {
-                        val curUser  = usersList.find { el -> el.phoneNumber.replace("-","").replace("+","") == it }
+                            val curUser = usersList.find { el ->
+                                el.phoneNumber.replace("-", "").replace("+", "") == it
+                            }
                             println(it)
-                        if(curUser !== null){
-                            isErrorAuthorization = false
-                            currentUserId = curUser.id
-                            currentUser = curUser
-                            navController.navigate(RidesharingScreen.FindCompanion.name)
-                        }
-                            else{
-                            isErrorAuthorization = true
-                        }
-                    })
+                            if (curUser !== null) {
+                                isErrorAuthorization = false
+                                currentUserId = curUser.id
+                                currentUser = curUser
+                                navController.navigate(RidesharingScreen.FindCompanion.name)
+                            } else {
+                                isErrorAuthorization = true
+                            }
+                        })
                 }
                 composable(route = RidesharingScreen.FindCompanion.name) {
-                    FindCompanionScreen(companionDrivesList = myDrivesList, onItemClick = { selectedDriveId ->
-                        navController.navigate("${RidesharingScreen.Drive.name}?driveId=${selectedDriveId}")
-                    })
+                    FindCompanionScreen(
+                        companionDrivesList = myDrivesList,
+                        onItemClick = { selectedDriveId ->
+                            navController.navigate("${RidesharingScreen.Drive.name}?driveId=${selectedDriveId}")
+                        })
                 }
                 composable(route = RidesharingScreen.CreateDrive.name) {
                     MyDrivesScreen(
@@ -235,8 +243,11 @@ fun RidesharingApp(
                 composable(route = RidesharingScreen.DriveHistory.name) {
                     TravelHistory(travelList = travelList)
                 }
-                composable(route = RidesharingScreen.EditProfile.name){
-                    EditProfileScreen(onBackStrack = { navController.popBackStack() }, userState = currentUser)
+                composable(route = RidesharingScreen.EditProfile.name) {
+                    EditProfileScreen(
+                        onBackStrack = { navController.popBackStack() },
+                        userState = currentUser
+                    )
                 }
                 composable(route = RidesharingScreen.Support.name) {
                     SupportDialog(messagesList = messageList)
@@ -247,7 +258,10 @@ fun RidesharingApp(
                 composable(route = RidesharingScreen.About.name) {
                     AboutScreen()
                 }
-                composable(route= "Drive?driveId={driveId}",arguments = listOf(navArgument("driveId") { defaultValue = "" })){ backStackEntry ->
+                composable(
+                    route = "Drive?driveId={driveId}",
+                    arguments = listOf(navArgument("driveId") { defaultValue = "" })
+                ) { backStackEntry ->
                     //val driveId = Integer.parseInt(backStackEntry.arguments?.getString("driveId"))
                     val driveId = backStackEntry.arguments?.getString("driveId")
                     DriveScreen(driveModel = driveList[Integer.parseInt(driveId)])
@@ -255,4 +269,5 @@ fun RidesharingApp(
             }
         }
     }
+    //  }
 }
