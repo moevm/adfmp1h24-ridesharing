@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
+import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.data.CarSelectOptions
 import com.etu.ridesharing.data.DataCarInfoList
 import com.etu.ridesharing.ui.components.AutoCompleteTextField
@@ -74,6 +75,7 @@ fun AdminPageCars(
         )
     }
 
+
     Column(
         modifier
             .fillMaxWidth()
@@ -91,7 +93,14 @@ fun AdminPageCars(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            items(carsList.carList.size) { carInd ->
+            items(carsList.carList.filter {
+                filterFun(
+                    it,
+                    textMark,
+                    textNumber,
+                    textColor
+                )
+            }.size) { carInd ->
                 if (carInd > 0) {
                     Spacer(modifier = Modifier.height(10.dp))
                 }
@@ -145,12 +154,6 @@ fun CarFilterDialog(
                         label = "Марка автомобиля",
                         categories = listOf("Toyota", "Volkswagen", "Ford", "Hyundai", "Honda")
                     )
-
-                    /*AutoCompleteTextField(
-                        label = stringResource(id = R.string.mark,""),
-                        categories = listOf("Toyota", "Volkswagen", "Ford", "Hyundai", "Honda")
-                    )*/
-
                     AutoCompleteTextField(
                         supportingText = { },
                         onValueChange = {
@@ -160,10 +163,6 @@ fun CarFilterDialog(
                         label = "Номер автомобиля",
                         categories = listOf("А001АА", "В002ВВ", "Е003ЕЕ", "К004КК", "М005ММ")
                     )
-                    /*AutoCompleteTextField(
-                        label = stringResource(id = R.string.number,""),
-                        categories = listOf("А001АА", "В002ВВ", "Е003ЕЕ", "К004КК", "М005ММ")
-                    )*/
                     AutoCompleteTextField(
                         supportingText = { },
                         onValueChange = {
@@ -173,10 +172,6 @@ fun CarFilterDialog(
                         label = "Цвет автомобиля",
                         categories = listOf("Белый", "Чёрный", "Серый", "Красный", "Синий")
                     )
-                    /*AutoCompleteTextField(
-                        label = stringResource(id = R.string.color,""),
-                        categories = listOf("Белый", "Чёрный", "Серый", "Красный", "Синий")
-                    )*/
                     Button(onClick = {
                         changeValues(textMark_temp, textNumber_temp, textColor_temp)
                         onDismissRequest() },
@@ -194,4 +189,8 @@ fun CarFilterDialog(
             }
         }
     }
+}
+
+fun filterFun(item : CarInfoState, mark : String, number : String, color : String) : Boolean{
+    return item.mark.contains(mark, ignoreCase = true) and item.number.contains(number, ignoreCase = true) and item.color.contains(color, ignoreCase = true)
 }
