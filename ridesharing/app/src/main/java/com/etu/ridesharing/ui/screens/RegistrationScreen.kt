@@ -151,19 +151,22 @@ fun phoneFilter(text: AnnotatedString): TransformedText {
 
     val numberOffsetTranslator = object : OffsetMapping {
         override fun originalToTransformed(offset: Int): Int {
-            if (offset <= 2) return offset
-            if (offset <= 5) return offset + 1
-            if (offset <= 9) return offset + 2
-            if (offset <= 12) return offset + 3
-            return 17 // Возвращаем конечное положение, если длина строки больше 17
+            return if (offset == 0) offset
+            else if (offset == 1) offset + 1
+            else if (offset <= 4) offset + 2
+            else if (offset <= 7) offset + 3
+            else if (offset <= 9) offset + 4
+            else offset + 5 // Возвращаем конечное положение, равное длине исходной строки
         }
 
         override fun transformedToOriginal(offset: Int): Int {
-            if (offset <= 3) return offset
-            if (offset <= 7) return offset - 1
-            if (offset <= 11) return offset - 2
-            if (offset <= 16) return offset - 3
-            return 10 // Возвращаем конечное положение, если длина строки больше 14
+            return when {
+                offset <= 3 -> 0
+                offset <= 7 -> 0
+                offset <= 11 -> 0
+                offset <= trimmed.length -> 0
+                else -> 0 // Корректируем, чтобы не выходить за границы исходной строки
+            }
         }
     }
 
