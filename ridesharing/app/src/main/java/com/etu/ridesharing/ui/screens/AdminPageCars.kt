@@ -20,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -39,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
+import com.etu.ridesharing.data.CarSelectOptions
 import com.etu.ridesharing.data.DataCarInfoList
 import com.etu.ridesharing.ui.components.AutoCompleteTextField
 import com.etu.ridesharing.ui.components.CarCard
@@ -60,11 +62,22 @@ fun AdminPageCars(
 
     if (isSheetOpen){
         CarFilterDialog(
+            textMark = textMark,
+            textNumber = textNumber,
+            textColor = textColor,
+            changeValues = { mark,number,color->
+                textMark = mark
+                textNumber = number
+                textColor = color
+            },
             onDismissRequest = { isSheetOpen = false },
         )
     }
 
-    Column(modifier.fillMaxWidth().fillMaxHeight()) {
+    Column(
+        modifier
+            .fillMaxWidth()
+            .fillMaxHeight()) {
         Button(
             modifier = Modifier
                 .padding(25.dp, 30.dp)
@@ -96,11 +109,15 @@ fun AdminPageCars(
 
 @Composable
 fun CarFilterDialog(
+    textMark : String,
+    textNumber : String,
+    textColor : String,
+    changeValues : (String, String, String)->Unit,
     onDismissRequest: () -> Unit,
 ) {
-    var textMark by rememberSaveable { mutableStateOf("") }
-    var textNumber by rememberSaveable { mutableStateOf("") }
-    var textColor by rememberSaveable { mutableStateOf("") }
+    var textMark_temp by rememberSaveable { mutableStateOf(textMark) }
+    var textNumber_temp by rememberSaveable { mutableStateOf(textNumber) }
+    var textColor_temp by rememberSaveable { mutableStateOf(textColor) }
     val focusManager = LocalFocusManager.current
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
@@ -115,25 +132,61 @@ fun CarFilterDialog(
         ) {
             Row(){
                 Column(
-                    modifier = Modifier.fillMaxWidth(0.9f).padding(start = 16.dp, top = 32.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .padding(start = 16.dp, top = 32.dp),
                 ) {
+                    AutoCompleteTextField(
+                        supportingText = { },
+                        onValueChange = {
+                            textMark_temp = it
+                        },
+                        value = textMark_temp,
+                        label = "Марка автомобиля",
+                        categories = listOf("Toyota", "Volkswagen", "Ford", "Hyundai", "Honda")
+                    )
+
                     /*AutoCompleteTextField(
                         label = stringResource(id = R.string.mark,""),
                         categories = listOf("Toyota", "Volkswagen", "Ford", "Hyundai", "Honda")
-                    )
+                    )*/
+
                     AutoCompleteTextField(
-                        label = stringResource(id = R.string.number,""),
+                        supportingText = { },
+                        onValueChange = {
+                            textNumber_temp = it
+                        },
+                        value = textNumber_temp,
+                        label = "Номер автомобиля",
                         categories = listOf("А001АА", "В002ВВ", "Е003ЕЕ", "К004КК", "М005ММ")
                     )
+                    /*AutoCompleteTextField(
+                        label = stringResource(id = R.string.number,""),
+                        categories = listOf("А001АА", "В002ВВ", "Е003ЕЕ", "К004КК", "М005ММ")
+                    )*/
                     AutoCompleteTextField(
+                        supportingText = { },
+                        onValueChange = {
+                            textColor_temp = it
+                        },
+                        value = textColor_temp,
+                        label = "Цвет автомобиля",
+                        categories = listOf("Белый", "Чёрный", "Серый", "Красный", "Синий")
+                    )
+                    /*AutoCompleteTextField(
                         label = stringResource(id = R.string.color,""),
                         categories = listOf("Белый", "Чёрный", "Серый", "Красный", "Синий")
                     )*/
-                    Button(onClick = {  }, modifier = Modifier.padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
+                    Button(onClick = {
+                        changeValues(textMark_temp, textNumber_temp, textColor_temp)
+                        onDismissRequest() },
+                        modifier = Modifier.padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
                         Text("Применить фильтры")
                     }
                 }
-                Column(modifier = Modifier.weight(0.2f).padding(end = 8.dp)) {
+                Column(modifier = Modifier
+                    .weight(0.2f)
+                    .padding(end = 8.dp)) {
                     IconButton(onClick = { onDismissRequest() }, modifier = Modifier.size(R.dimen.padding_medium.dp)) {
                         Icon(Icons.Outlined.Close, contentDescription = "Localized description")
                     }

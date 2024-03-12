@@ -50,6 +50,7 @@ fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, 
     ) {
         Row(){
             CustomTextField(
+                supportingText = { },
                 text = "C:",
                 type = "date",
                 label = { Text("дд/мм/гггг") },
@@ -61,6 +62,7 @@ fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, 
         Spacer(modifier = Modifier.height(10.dp))
         Row(){
             CustomTextField(
+                supportingText = { },
                 text = "По:",
                 type = "date",
                 label = { Text("дд/мм/гггг") },
