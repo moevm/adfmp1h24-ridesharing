@@ -27,7 +27,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -93,19 +95,20 @@ fun AdminPageCars(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            items(carsList.carList.filter {
+            var filtered = carsList.carList.filter {
                 filterFun(
                     it,
                     textMark,
                     textNumber,
                     textColor
                 )
-            }.size) { carInd ->
+            }
+            items(filtered.size) { carInd ->
                 if (carInd > 0) {
                     Spacer(modifier = Modifier.height(10.dp))
                 }
                 CarCard(
-                    carInfo = carsList.carList[carInd],
+                    carInfo = filtered[carInd],
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
