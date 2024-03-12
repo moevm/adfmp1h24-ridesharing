@@ -1,7 +1,5 @@
 package com.etu.ridesharing.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,27 +13,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.etu.ridesharing.ui.components.CustomTextField
+import kotlin.math.abs
 
-@Composable @Preview
-fun AdminPageStats() {
-    var textFrom by rememberSaveable { mutableStateOf("") }
-    var textTo by rememberSaveable { mutableStateOf("") }
-    val maxCharDate = 8
+@Composable
+fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, onChange2: (String)->Unit) {
     val focusManager = LocalFocusManager.current
 
     Column(
@@ -53,44 +43,123 @@ fun AdminPageStats() {
     ) {
         Row(){
             CustomTextField(
+                isError = textFrom.length == 8 && !checkValue(textFrom),
+                supportingText = {
+                     if (textFrom.length == 8 && !checkValue(textFrom)){
+                         Text(
+                             modifier = Modifier.fillMaxWidth(),
+                             text = "Неправильная дата",
+                             color = MaterialTheme.colorScheme.error
+                         )
+                     }
+                },
                 text = "C:",
                 type = "date",
                 label = { Text("дд/мм/гггг") },
                 value = textFrom,
-                onValueChange = {
-                    if (it.length <= maxCharDate) textFrom = it
-                },
+                onValueChange = {onChange1(it)},
                 leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
         Row(){
             CustomTextField(
+                isError = textTo.length == 8 && !checkValue(textTo),
+                supportingText = {
+                    if (textTo.length == 8 && !checkValue(textTo)){
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Неправильная дата",
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                },
                 text = "По:",
                 type = "date",
                 label = { Text("дд/мм/гггг") },
                 value = textTo,
-                onValueChange = {
-                    if (it.length <= maxCharDate) textTo = it
-                },
+                onValueChange = {onChange2(it)},
                 leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
             )
         }
 
-        Column(Modifier.fillMaxHeight().padding(top=25.dp)) {
+        Column(
+            Modifier
+                .fillMaxHeight()
+                .padding(top = 25.dp)) {
             Row {
-                Text(text = "Пользователей", Modifier.fillMaxWidth(0.3F).padding(top=25.dp))
-                Text(text = "4", Modifier.fillMaxWidth(0.5F).padding(top=25.dp, start=25.dp))
+                Text(text = "Пользователей",
+                    Modifier
+                        .fillMaxWidth(0.3F)
+                        .padding(top = 25.dp))
+                Text(text = "${calcUsers(textFrom, textTo)}",
+                    Modifier
+                        .fillMaxWidth(0.5F)
+                        .padding(top = 25.dp, start = 25.dp))
             }
             Row {
-                Text(text = "Всего поездок", Modifier.fillMaxWidth(0.3F).padding(top=25.dp))
-                Text(text = "1", Modifier.fillMaxWidth(0.5F).padding(top=25.dp, start=25.dp))
+                Text(text = "Всего поездок",
+                    Modifier
+                        .fillMaxWidth(0.3F)
+                        .padding(top = 25.dp))
+                Text(text = "${calcRides(textFrom, textTo)}",
+                    Modifier
+                        .fillMaxWidth(0.5F)
+                        .padding(top = 25.dp, start = 25.dp))
             }
             Row {
-                Text(text = "Общий пробег", Modifier.fillMaxWidth(0.3F).padding(top=25.dp))
-                Text(text = "10", Modifier.fillMaxWidth(0.5F).padding(top=25.dp, start=25.dp))
+                Text(text = "Общий пробег",
+                    Modifier
+                        .fillMaxWidth(0.3F)
+                        .padding(top = 25.dp))
+                Text(text = "${calcDistance(textFrom, textTo)}",
+                    Modifier
+                        .fillMaxWidth(0.5F)
+                        .padding(top = 25.dp, start = 25.dp))
             }
         }
 
     }
+}
+
+fun checkValue(date : String) : Boolean{
+    if (date.isEmpty() || date.length < 8)
+        return false
+    return date.slice(0..1).toInt() in (1..31) && date.slice(2..3).toInt() in (1..12) && date.slice(4..7).toInt() in (0..2024)
+}
+
+fun compareDates(first : String, second : String) : Boolean{
+    if (!checkValue(first) || !checkValue(second))
+        return false
+    return first.slice(4..7).toInt() <= second.slice(4..7).toInt() && first.slice(2..3).toInt() <= second.slice(2..3).toInt() && first.slice(0..1).toInt() <= second.slice(0..1).toInt()
+}
+
+fun calcUsers(dateFrom : String, dateTo : String): Int {
+    if (!compareDates(dateFrom, dateTo)){
+        return 54789
+    }
+    val dateFromInt = dateFrom.reversed().toInt()
+    val dateToInt = dateTo.reversed().toInt()
+
+    return abs(dateFromInt-dateToInt) % 54789 + 345
+}
+
+fun calcRides(dateFrom : String, dateTo : String): Int {
+    if (!compareDates(dateFrom, dateTo)){
+        return 3124
+    }
+    val dateFromInt = dateFrom.reversed().toInt()
+    val dateToInt = dateTo.reversed().toInt()
+
+    return (abs(dateFromInt-dateToInt) % 54789 + 345) /2
+}
+
+fun calcDistance(dateFrom : String, dateTo : String): Int {
+    if (!compareDates(dateFrom, dateTo)){
+        return 312465
+    }
+    val dateFromInt = dateFrom.reversed().toInt()
+    val dateToInt = dateTo.reversed().toInt()
+
+    return (abs((dateFromInt-dateToInt)*49)) % 312465 + 32
 }

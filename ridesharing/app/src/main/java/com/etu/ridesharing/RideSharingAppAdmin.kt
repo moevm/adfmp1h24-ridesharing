@@ -20,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -53,6 +54,16 @@ fun NavHostContainer(
     padding: PaddingValues
 ) {
     val carsList by remember { mutableStateOf(DataCarInfoList) }
+
+    var textFrom by rememberSaveable { mutableStateOf("") }
+    var textTo by rememberSaveable { mutableStateOf("") }
+
+    var textMark by rememberSaveable { mutableStateOf("") }
+    var textNumber by rememberSaveable { mutableStateOf("") }
+    var textColor by rememberSaveable { mutableStateOf("") }
+
+    val maxCharDate = 8
+
     NavHost(
         navController = navController,
 
@@ -65,11 +76,20 @@ fun NavHostContainer(
         builder = {
             // route : stats
             composable("stats") {
-                AdminPageStats()
+                AdminPageStats(textFrom, textTo, onChange1={it->
+                    if (it.length <= maxCharDate) textFrom = it
+                }, onChange2={it->
+                    if (it.length <= maxCharDate) textTo = it
+                })
             }
             // route : cars
             composable("cars") {
-                AdminPageCars(carsList = carsList)
+                AdminPageCars(textMark,textNumber,textColor,
+                    changeValues = {mark, number, color ->
+                        textMark = mark
+                        textNumber = number
+                        textColor = color
+                    },carsList = carsList)
             }
         })
 }
