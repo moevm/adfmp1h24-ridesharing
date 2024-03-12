@@ -128,8 +128,14 @@ fun checkValue(date : String) : Boolean{
     return date.slice(0..1).toInt() in (1..31) && date.slice(2..3).toInt() in (1..12) && date.slice(4..7).toInt() in (0..2024)
 }
 
+fun compareDates(first : String, second : String) : Boolean{
+    if (!checkValue(first) || !checkValue(second))
+        return false
+    return first.slice(4..7).toInt() <= second.slice(4..7).toInt() && first.slice(2..3).toInt() <= second.slice(2..3).toInt() && first.slice(0..1).toInt() <= second.slice(0..1).toInt()
+}
+
 fun calcUsers(dateFrom : String, dateTo : String): Int {
-    if (!(checkValue(dateFrom) && checkValue(dateTo))){
+    if (!compareDates(dateFrom, dateTo)){
         return 54789
     }
     val dateFromInt = dateFrom.reversed().toInt()
@@ -139,7 +145,7 @@ fun calcUsers(dateFrom : String, dateTo : String): Int {
 }
 
 fun calcRides(dateFrom : String, dateTo : String): Int {
-    if (!(checkValue(dateFrom) && checkValue(dateTo))){
+    if (!compareDates(dateFrom, dateTo)){
         return 3124
     }
     val dateFromInt = dateFrom.reversed().toInt()
@@ -149,11 +155,11 @@ fun calcRides(dateFrom : String, dateTo : String): Int {
 }
 
 fun calcDistance(dateFrom : String, dateTo : String): Int {
-    if (!(checkValue(dateFrom) && checkValue(dateTo))){
+    if (!compareDates(dateFrom, dateTo)){
         return 312465
     }
     val dateFromInt = dateFrom.reversed().toInt()
     val dateToInt = dateTo.reversed().toInt()
 
-    return abs(dateFromInt-dateToInt)*49 + 32
+    return (abs((dateFromInt-dateToInt)*49)) % 312465 + 32
 }
