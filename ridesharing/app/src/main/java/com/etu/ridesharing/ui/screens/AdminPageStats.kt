@@ -13,26 +13,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.etu.ridesharing.ui.components.CustomTextField
 import kotlin.math.abs
 
 @Composable
 fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, onChange2: (String)->Unit) {
-    //var textFrom by rememberSaveable { mutableStateOf("") }
-    //var textTo by rememberSaveable { mutableStateOf("") }
-    val maxCharDate = 8
     val focusManager = LocalFocusManager.current
 
     Column(
@@ -50,7 +43,16 @@ fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, 
     ) {
         Row(){
             CustomTextField(
-                supportingText = { },
+                isError = textFrom.length == 8 && !checkValue(textFrom),
+                supportingText = {
+                     if (textFrom.length == 8 && !checkValue(textFrom)){
+                         Text(
+                             modifier = Modifier.fillMaxWidth(),
+                             text = "Неправильная дата",
+                             color = MaterialTheme.colorScheme.error
+                         )
+                     }
+                },
                 text = "C:",
                 type = "date",
                 label = { Text("дд/мм/гггг") },
@@ -62,7 +64,16 @@ fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, 
         Spacer(modifier = Modifier.height(10.dp))
         Row(){
             CustomTextField(
-                supportingText = { },
+                isError = textTo.length == 8 && !checkValue(textTo),
+                supportingText = {
+                    if (textTo.length == 8 && !checkValue(textTo)){
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = "Неправильная дата",
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                },
                 text = "По:",
                 type = "date",
                 label = { Text("дд/мм/гггг") },
@@ -111,8 +122,14 @@ fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, 
     }
 }
 
+fun checkValue(date : String) : Boolean{
+    if (date.isEmpty() || date.length < 8)
+        return false
+    return date.slice(0..1).toInt() in (1..31) && date.slice(2..3).toInt() in (1..12) && date.slice(4..7).toInt() in (0..2024)
+}
+
 fun calcUsers(dateFrom : String, dateTo : String): Int {
-    if (dateFrom.length < 8 || dateTo.length < 8){
+    if (!(checkValue(dateFrom) && checkValue(dateTo))){
         return 54789
     }
     val dateFromInt = dateFrom.reversed().toInt()
@@ -122,7 +139,7 @@ fun calcUsers(dateFrom : String, dateTo : String): Int {
 }
 
 fun calcRides(dateFrom : String, dateTo : String): Int {
-    if (dateFrom.length < 8 || dateTo.length < 8){
+    if (!(checkValue(dateFrom) && checkValue(dateTo))){
         return 3124
     }
     val dateFromInt = dateFrom.reversed().toInt()
@@ -132,7 +149,7 @@ fun calcRides(dateFrom : String, dateTo : String): Int {
 }
 
 fun calcDistance(dateFrom : String, dateTo : String): Int {
-    if (dateFrom.length < 8 || dateTo.length < 8){
+    if (!(checkValue(dateFrom) && checkValue(dateTo))){
         return 312465
     }
     val dateFromInt = dateFrom.reversed().toInt()
