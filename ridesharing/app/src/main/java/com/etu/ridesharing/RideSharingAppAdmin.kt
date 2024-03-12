@@ -58,6 +58,10 @@ fun NavHostContainer(
     var textFrom by rememberSaveable { mutableStateOf("") }
     var textTo by rememberSaveable { mutableStateOf("") }
 
+    var textMark by rememberSaveable { mutableStateOf("") }
+    var textNumber by rememberSaveable { mutableStateOf("") }
+    var textColor by rememberSaveable { mutableStateOf("") }
+
     val maxCharDate = 8
 
     NavHost(
@@ -80,7 +84,12 @@ fun NavHostContainer(
             }
             // route : cars
             composable("cars") {
-                AdminPageCars(carsList = carsList)
+                AdminPageCars(textMark,textNumber,textColor,
+                    changeValues = {mark, number, color ->
+                        textMark = mark
+                        textNumber = number
+                        textColor = color
+                    },carsList = carsList)
             }
         })
 }

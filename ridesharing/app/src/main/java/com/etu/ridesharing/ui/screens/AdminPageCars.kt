@@ -50,14 +50,18 @@ import com.etu.ridesharing.ui.components.CarCard
 import com.etu.ridesharing.ui.components.CustomTextField
 import com.etu.ridesharing.ui.components.MyDriveDialog
 
-@Composable @Preview
+@Composable
 fun AdminPageCars(
+    textMark: String,
+    textNumber: String,
+    textColor: String,
+    changeValues : (String, String, String)->Unit,
     carsList: DataCarInfoList = DataCarInfoList,
     modifier: Modifier = Modifier
 ) {
-    var textMark by rememberSaveable { mutableStateOf("") }
-    var textNumber by rememberSaveable { mutableStateOf("") }
-    var textColor by rememberSaveable { mutableStateOf("") }
+    //var textMark by rememberSaveable { mutableStateOf("") }
+    //var textNumber by rememberSaveable { mutableStateOf("") }
+    //var textColor by rememberSaveable { mutableStateOf("") }
 
     var isSheetOpen by rememberSaveable {
         mutableStateOf(false)
@@ -69,9 +73,7 @@ fun AdminPageCars(
             textNumber = textNumber,
             textColor = textColor,
             changeValues = { mark,number,color->
-                textMark = mark
-                textNumber = number
-                textColor = color
+                changeValues(mark, number, color)
             },
             onDismissRequest = { isSheetOpen = false },
         )
