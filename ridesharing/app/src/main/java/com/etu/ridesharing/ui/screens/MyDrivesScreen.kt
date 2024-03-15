@@ -25,7 +25,9 @@ import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.components.MyDriveCard
 import com.etu.ridesharing.ui.components.MyDriveDialog
 import com.etu.ridesharing.data.DriveInfoState
+import com.etu.ridesharing.data.DriveState
 import com.etu.ridesharing.data.UserState
+import com.etu.ridesharing.models.DriveModel
 
 @Composable
 fun MyDrivesScreen(
@@ -35,6 +37,7 @@ fun MyDrivesScreen(
 ) {
     val openAlertDialog = remember { mutableStateOf(openDialog) }
     val driveState = DriveInfoState()
+    val compDriveModel = DriveModel()
     val drivesState = remember { mutableStateOf(user.userDrives.toMutableList())}
     when {
         // ...
@@ -52,6 +55,7 @@ fun MyDrivesScreen(
                     user.userDrives.add(driveState)
                     user.userDrives = drivesState.value.toMutableList().apply { add(driveState) }
                     drivesState.value = drivesState.value.toMutableList().apply { add(driveState) }
+
                 },
                 onDismissRequest = { openAlertDialog.value = false }
             )

@@ -103,7 +103,7 @@ fun MyDriveDialog(
     var to by rememberSaveable { mutableStateOf(driveState.to) }
     var price by rememberSaveable { mutableStateOf(driveState.price) }
     var numberPlaces by rememberSaveable { mutableStateOf(driveState.numberPlaces) }
-    var score = 10
+    var score = 9
     val focusManager = LocalFocusManager.current
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(

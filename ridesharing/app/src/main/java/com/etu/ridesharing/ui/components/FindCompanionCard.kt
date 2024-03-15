@@ -64,7 +64,9 @@ fun FindCompanionCard(
             Row(
 
             ){
-                Button(onClick = {onItemClick(uiState.driveId)} , modifier = Modifier.size(width = 200.dp, height = 60.dp).padding(start = 20.dp, top = 10.dp)) {
+                Button(onClick = {onItemClick(uiState.driveId)}
+                    , modifier = Modifier.size(width = 200.dp, height = 60.dp)
+                        .padding(start = 20.dp, top = 10.dp)) {
                     Text("Просмотреть")
                 }
             }
