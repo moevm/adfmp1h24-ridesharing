@@ -97,12 +97,12 @@ fun MyDriveDialog(
     driveState: DriveInfoState = DriveInfoState(),
     onDismissRequest: () -> Unit,
 ) {
-    var driveDate by rememberSaveable { mutableStateOf("") }
-    var driveTime by rememberSaveable { mutableStateOf("") }
-    var from by rememberSaveable { mutableStateOf("") }
-    var to by rememberSaveable { mutableStateOf("") }
-    var price by rememberSaveable { mutableStateOf("") }
-    var driveNumberPlaces by rememberSaveable { mutableStateOf("") }
+    var driveDate by rememberSaveable { mutableStateOf(driveState.driveDate) }
+    var driveTime by rememberSaveable { mutableStateOf(driveState.driveTime) }
+    var from by rememberSaveable { mutableStateOf(driveState.from) }
+    var to by rememberSaveable { mutableStateOf(driveState.to) }
+    var price by rememberSaveable { mutableStateOf(driveState.price) }
+    var numberPlaces by rememberSaveable { mutableStateOf(driveState.numberPlaces) }
     var score = 10
     val focusManager = LocalFocusManager.current
     Dialog(onDismissRequest = { onDismissRequest() }) {
@@ -165,23 +165,23 @@ fun MyDriveDialog(
                             text = "Стоимость:",
                             type = "number",
                             label = { Text("Тенге") },
-                            value = price,
+                            value = price.toString(),
                             onValueChange = {
-                                price = it
+                                price = it.toIntOrNull() ?: 0
                             },
                         )
                         CustomTextField(
                             text = "Кол-во мест:",
                             type = "number",
                             label = { Text("кол-во мест") },
-                            value = driveNumberPlaces,
+                            value = numberPlaces.toString(),
                             onValueChange = {
-                                driveNumberPlaces = it
+                                numberPlaces = it.toIntOrNull() ?: 0
                             },
                         )
                     Button(onClick = {
                         score++
-                        actionFunction(driveDate, driveTime,from, to, price.toIntOrNull() ?: 0, driveNumberPlaces.toIntOrNull() ?: 0, score)
+                        actionFunction(driveDate, driveTime,from, to, price, numberPlaces, score)
                         onDismissRequest() }, modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
                         Text("Сохранить")
                     }
