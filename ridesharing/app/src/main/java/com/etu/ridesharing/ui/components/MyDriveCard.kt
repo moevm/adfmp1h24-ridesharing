@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.etu.ridesharing.R
+import com.etu.ridesharing.data.CarInfoState
+import com.etu.ridesharing.data.DriveInfoState
 import com.etu.ridesharing.models.DriveInfoModel
 
 @Composable
@@ -51,9 +53,9 @@ fun MyDriveCard(
     when {
         // ...
         openAlertDialog.value -> {
-            MyDriveDialog(
-                onDismissRequest = { openAlertDialog.value = false },
-            )
+//            MyDriveDialog(
+//                onDismissRequest = { openAlertDialog.value = false },
+//            )
         }
     }
     Card(modifier = Modifier) {
@@ -80,13 +82,15 @@ fun MyDriveCard(
 
 @Composable
 fun MyDriveDialog(
+    actionFunction: (driveDate: String,driveTime: String, from: String,to: String,price: Int,numberPlaces: Int,driveId:Int) -> Unit,
+    driveState: DriveInfoState = DriveInfoState(),
     onDismissRequest: () -> Unit,
 ) {
     var driveDate by rememberSaveable { mutableStateOf("") }
     var driveTime by rememberSaveable { mutableStateOf("") }
-    var driveFrom by rememberSaveable { mutableStateOf("") }
-    var driveTo by rememberSaveable { mutableStateOf("") }
-    var drivePrice by rememberSaveable { mutableStateOf("") }
+    var from by rememberSaveable { mutableStateOf("") }
+    var to by rememberSaveable { mutableStateOf("") }
+    var price by rememberSaveable { mutableStateOf("") }
     var driveNumberPlaces by rememberSaveable { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     Dialog(onDismissRequest = { onDismissRequest() }) {
@@ -131,27 +135,27 @@ fun MyDriveDialog(
                             text = "Откуда:",
                             type = "text",
                             label = { Text("Город") },
-                            value = driveFrom,
+                            value = from,
                             onValueChange = {
-                                driveFrom = it
+                                from = it
                             },
                         )
                         CustomTextField(
                             text = "Куда:",
                             type = "text",
                             label = { Text("Город") },
-                            value = driveTo,
+                            value = to,
                             onValueChange = {
-                                driveTo = it
+                                to = it
                             },
                         )
                         CustomTextField(
                             text = "Стоимость:",
                             type = "number",
                             label = { Text("Тенге") },
-                            value = drivePrice,
+                            value = price,
                             onValueChange = {
-                                drivePrice = it
+                                price = it
                             },
                         )
                         CustomTextField(
@@ -163,7 +167,9 @@ fun MyDriveDialog(
                                 driveNumberPlaces = it
                             },
                         )
-                    Button(onClick = { onDismissRequest() }, modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
+                    Button(onClick = {
+                        actionFunction(driveDate, driveTime,from, to, price.toIntOrNull() ?: 0, driveNumberPlaces.toIntOrNull() ?: 0, 10)
+                        onDismissRequest() }, modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
                         Text("Сохранить")
                     }
                 }
