@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -26,6 +27,8 @@ import com.etu.ridesharing.ui.components.MyDriveCard
 import com.etu.ridesharing.ui.components.MyDriveDialog
 import com.etu.ridesharing.data.DriveInfoState
 import com.etu.ridesharing.data.UserState
+import com.etu.ridesharing.models.CarInfoModel
+import com.etu.ridesharing.ui.components.ProfileCarCard
 
 @Composable
 fun MyDrivesScreen(
@@ -64,6 +67,10 @@ fun MyDrivesScreen(
             .fillMaxWidth()
             .fillMaxHeight()
     ) {
+        val removeDrive: (DriveInfoState) -> Unit = { drive ->
+            drivesState.value = drivesState.value.toMutableList().apply { remove(drive) }
+            user.userDrives = drivesState.value.toMutableList().apply { remove(drive) }
+        }
         LazyColumn(
             modifier = modifier
                 .fillMaxWidth()
@@ -71,18 +78,38 @@ fun MyDrivesScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(myDrivesList.size) { driveIndex ->
-                if (driveIndex > 0) {
+            itemsIndexed(drivesState.value) { index, drive ->
+                if (index != 0) {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
                 MyDriveCard(
-                    driveInfoModel = DriveInfoModel(myDrivesList[driveIndex]),
+                    driveInfoModel = DriveInfoModel(drive),
                     modifier = modifier,
                     onEditItem = {},
-                    onDeleteItem = { onRemoveDrive(myDrivesList[driveIndex]) },
+                    onDeleteItem = {
+                        removeDrive(drive)
+                    },
                 )
             }
+//            items(myDrivesList.size) { driveIndex ->
+//                if (driveIndex > 0) {
+//                    Spacer(modifier = Modifier.height(16.dp))
+//                }
+//                MyDriveCard(
+//                    driveInfoModel = DriveInfoModel(myDrivesList[driveIndex]),
+//                    modifier = modifier,
+//                    onEditItem = {},
+//                    onDeleteItem = { onRemoveDrive(myDrivesList[driveIndex]) },
+//                )
+//            }
         }
+
+
+
+
+
+
+
         FloatingActionButton(
             onClick = { openAlertDialog.value = true },
             modifier = Modifier

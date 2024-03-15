@@ -54,7 +54,17 @@ fun MyDriveCard(
         // ...
         openAlertDialog.value -> {
 //            MyDriveDialog(
-//                onDismissRequest = { openAlertDialog.value = false },
+//                driveState = driveState,
+//                actionFunction = { driveDate, driveTime, from, to, price, numberPlaces,driveId ->
+//                    driveState.driveDate = driveDate
+//                    driveState.driveTime= driveTime
+//                    driveState.from= from
+//                    driveState.to=to
+//                    driveState.price=price
+//                    driveState.numberPlaces= numberPlaces
+//                    driveState.driveId= driveId
+//                },
+//                onDismissRequest = { openAlertDialog.value = false }
 //            )
         }
     }
@@ -92,6 +102,7 @@ fun MyDriveDialog(
     var to by rememberSaveable { mutableStateOf("") }
     var price by rememberSaveable { mutableStateOf("") }
     var driveNumberPlaces by rememberSaveable { mutableStateOf("") }
+    var score = 10
     val focusManager = LocalFocusManager.current
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
@@ -168,7 +179,8 @@ fun MyDriveDialog(
                             },
                         )
                     Button(onClick = {
-                        actionFunction(driveDate, driveTime,from, to, price.toIntOrNull() ?: 0, driveNumberPlaces.toIntOrNull() ?: 0, 10)
+                        score++
+                        actionFunction(driveDate, driveTime,from, to, price.toIntOrNull() ?: 0, driveNumberPlaces.toIntOrNull() ?: 0, score)
                         onDismissRequest() }, modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
                         Text("Сохранить")
                     }
