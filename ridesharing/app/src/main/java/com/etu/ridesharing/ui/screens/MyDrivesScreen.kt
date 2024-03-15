@@ -21,20 +21,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.etu.ridesharing.R
-import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.components.MyDriveCard
 import com.etu.ridesharing.ui.components.MyDriveDialog
 import com.etu.ridesharing.data.DriveInfoState
 import com.etu.ridesharing.data.UserState
-import com.etu.ridesharing.models.CarInfoModel
-import com.etu.ridesharing.ui.components.ProfileCarCard
 
 @Composable
 fun MyDrivesScreen(
     user: UserState,
-    myDrivesList: MutableList<DriveInfoState>,
-    onRemoveDrive: (DriveInfoState) -> Unit,
     openDialog: Boolean = false,
     modifier: Modifier = Modifier
 ) {
@@ -91,24 +86,7 @@ fun MyDrivesScreen(
                     },
                 )
             }
-//            items(myDrivesList.size) { driveIndex ->
-//                if (driveIndex > 0) {
-//                    Spacer(modifier = Modifier.height(16.dp))
-//                }
-//                MyDriveCard(
-//                    driveInfoModel = DriveInfoModel(myDrivesList[driveIndex]),
-//                    modifier = modifier,
-//                    onEditItem = {},
-//                    onDeleteItem = { onRemoveDrive(myDrivesList[driveIndex]) },
-//                )
-//            }
         }
-
-
-
-
-
-
 
         FloatingActionButton(
             onClick = { openAlertDialog.value = true },

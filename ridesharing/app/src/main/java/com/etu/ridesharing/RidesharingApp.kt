@@ -230,16 +230,12 @@ fun RidesharingApp(
                 composable(route = RidesharingScreen.CreateDrive.name) {
                     MyDrivesScreen(
                         user = currentUser,
-                        myDrivesList = myDrivesList,
-                        onRemoveDrive = { driveInfo -> removeDriveInfo(driveInfo) },
                         openDialog = true,
                     )
                 }
                 composable(route = RidesharingScreen.MyDrives.name) {
                     MyDrivesScreen(
                         user = currentUser,
-                        myDrivesList = myDrivesList,
-                        onRemoveDrive = { driveInfo -> removeDriveInfo(driveInfo) }
                     )
                 }
                 composable(route = RidesharingScreen.DriveHistory.name) {

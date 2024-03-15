@@ -49,23 +49,24 @@ fun MyDriveCard(
     onEditItem: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val uiState by driveInfoModel.uiState.collectAsState()
     val openAlertDialog = remember { mutableStateOf(false) }
     when {
         // ...
         openAlertDialog.value -> {
-//            MyDriveDialog(
-//                driveState = driveState,
-//                actionFunction = { driveDate, driveTime, from, to, price, numberPlaces,driveId ->
-//                    driveState.driveDate = driveDate
-//                    driveState.driveTime= driveTime
-//                    driveState.from= from
-//                    driveState.to=to
-//                    driveState.price=price
-//                    driveState.numberPlaces= numberPlaces
-//                    driveState.driveId= driveId
-//                },
-//                onDismissRequest = { openAlertDialog.value = false }
-//            )
+            MyDriveDialog(
+                driveState = uiState,
+                actionFunction = { driveDate, driveTime, from, to, price, numberPlaces,driveId ->
+                    uiState.driveDate = driveDate
+                    uiState.driveTime= driveTime
+                    uiState.from= from
+                    uiState.to=to
+                    uiState.price=price
+                    uiState.numberPlaces= numberPlaces
+                    uiState.driveId= driveId
+                },
+                onDismissRequest = { openAlertDialog.value = false }
+            )
         }
     }
     Card(modifier = Modifier) {
