@@ -40,6 +40,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.etu.ridesharing.R
 import com.etu.ridesharing.data.CarInfoState
+import com.etu.ridesharing.data.CarSelectOptions
+import com.etu.ridesharing.data.DataCitiesList
 import com.etu.ridesharing.data.DriveInfoState
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.screens.checkValue
@@ -103,9 +105,15 @@ fun MyDriveDialog(
     var driveTime by rememberSaveable { mutableStateOf(driveState.driveTime) }
     var from by rememberSaveable { mutableStateOf(driveState.from) }
     var to by rememberSaveable { mutableStateOf(driveState.to) }
-    var price by rememberSaveable { mutableStateOf(driveState.price) }
-    var numberPlaces by rememberSaveable { mutableStateOf(driveState.numberPlaces) }
+    var price by rememberSaveable { mutableStateOf("") }
+    var numberPlaces by rememberSaveable { mutableStateOf("") }
     var score = 9
+    var isErrorData by rememberSaveable { mutableStateOf(false) }
+    var isErrorTime by rememberSaveable { mutableStateOf(false) }
+    var isErrorTo by rememberSaveable { mutableStateOf(false) }
+    var isErrorFrom by rememberSaveable { mutableStateOf(false) }
+    var isErrorPrice by rememberSaveable { mutableStateOf(false) }
+    var isErrorNumber by rememberSaveable { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
@@ -125,9 +133,9 @@ fun MyDriveDialog(
 
                         val maxCharDate = 8
                         CustomTextField(
-                            isError = driveDate.length == 8 && !checkValue(driveDate),
+                            isError = isErrorData,
                             supportingText = {
-                                if (driveDate.length == 8 && !checkValue(driveDate)){
+                                if (isErrorData){
                                     Text(
                                         modifier = Modifier.fillMaxWidth(),
                                         text = "Неправильная дата",
@@ -140,61 +148,142 @@ fun MyDriveDialog(
                             label = { Text("дд/мм/гггг") },
                             value = driveDate,
                             onValueChange = {
-                                if (it.length <= maxCharDate) driveDate = it
+                                if (it.length <= maxCharDate){
+                                    driveDate = it
+                                }
+                                isErrorData = driveDate.length == 8 && !checkValue(driveDate)
                             },
                             leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
                         )
 
                         val maxCharTime = 4
                         CustomTextField(
+                            isError = isErrorTime,
+                            supportingText = {
+                                if (isErrorTime){
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = "Неправильное время",
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            },
                             text = "Время:",
                             type = "time",
                             label = { Text("чч:мм") },
                             value = driveTime,
                             onValueChange = {
-                                if (it.length <= maxCharTime) driveTime = it
+                                if (it.length <= maxCharTime){
+                                    driveTime = it
+                                }
+                                isErrorTime = driveTime.length == 4 && !checkTime(driveTime)
                             },
                         )
-                        CustomTextField(
-                            text = "Откуда:",
-                            type = "text",
-                            label = { Text("Город") },
-                            value = from,
+                        AutoCompleteTextField(
+                            isError = isErrorFrom,
                             onValueChange = {
                                 from = it
+                                isErrorFrom = false
                             },
+                            supportingText = {
+                                if (isErrorFrom) {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = "Нужно заполнить поле",
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            },
+                            value = from,
+                            label = "Откуда",
+                            categories = DataCitiesList.citiesList
                         )
-                        CustomTextField(
-                            text = "Куда:",
-                            type = "text",
-                            label = { Text("Город") },
-                            value = to,
+                        AutoCompleteTextField(
+                            isError = isErrorTo,
                             onValueChange = {
                                 to = it
+                                isErrorTo = false
                             },
+                            supportingText = {
+                                if (isErrorTo) {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = "Нужно заполнить поле",
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            },
+                            value = to,
+                            label = "Куда",
+                            categories = DataCitiesList.citiesList
                         )
                         CustomTextField(
+                            isError = isErrorPrice,
+                            supportingText = {
+                                if (isErrorPrice){
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = "Неправильная цена",
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            },
                             text = "Стоимость:",
                             type = "number",
                             label = { Text("Тенге") },
-                            value = price.toString(),
+                            value = price,
                             onValueChange = {
-                                price = it.toIntOrNull() ?: 0
+                                price = it
+                                isErrorPrice = false
                             },
                         )
                         CustomTextField(
+                            isError = isErrorNumber,
+                            supportingText = {
+                                if (isErrorNumber){
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = "Неправильное кол-во мест",
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            },
                             text = "Кол-во мест:",
                             type = "number",
                             label = { Text("кол-во мест") },
-                            value = numberPlaces.toString(),
+                            value = numberPlaces,
                             onValueChange = {
-                                numberPlaces = it.toIntOrNull() ?: 0
+                                numberPlaces = it
+                                isErrorNumber = false
                             },
                         )
                     Button(onClick = {
-                        score++
-                        actionFunction(driveDate, driveTime,from, to, price, numberPlaces, score)
-                        onDismissRequest() }, modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
+                        //Дата
+                        if(!(driveDate.length == 8 && !checkValue(driveDate)))
+                            isErrorData = driveDate.length < 8 && driveDate.length>0
+                        if(driveDate=="")
+                            isErrorData = true
+                        //Время
+                        if(!(driveTime.length == 4 && !checkTime(driveTime)))
+                            isErrorTime = driveTime.length < 4 && driveTime.length>0
+                        if(driveTime=="")
+                            isErrorTime = true
+                        //Откуда
+                        isErrorFrom = from ==""
+                        //Куда
+                        isErrorTo = to ==""
+                        //Цена
+                        isErrorPrice = price.toIntOrNull() ?: 0 <= 0
+                        //Места
+                        isErrorNumber = numberPlaces.toIntOrNull() ?: 0 <= 0
+
+                        if(!isErrorData and !isErrorTime and !isErrorFrom and !isErrorTo and !isErrorPrice and !isErrorNumber){
+                            score++
+                            actionFunction(driveDate.substring(0, 2)+"."+driveDate.substring(2, 4)+"."+driveDate.substring(4),
+                                driveTime.substring(0, 2)+":"+driveTime.substring(2),
+                                from, to, price.toIntOrNull() ?: 0, numberPlaces.toIntOrNull() ?: 0, score)
+                            onDismissRequest()
+                        } }, modifier = Modifier.padding(start = 64.dp, top = 32.dp)) {
                         Text("Сохранить")
                     }
                 }
@@ -206,4 +295,9 @@ fun MyDriveDialog(
             }
         }
     }
+}
+fun checkTime(date : String) : Boolean{
+    if (date.isEmpty() || date.length < 4)
+        return false
+    return date.slice(0..1).toInt() in (0..23) && date.slice(2..3).toInt() in (0..59)
 }

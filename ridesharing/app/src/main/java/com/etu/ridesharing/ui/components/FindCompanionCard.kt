@@ -49,7 +49,7 @@ fun FindCompanionCard(
                 Column(modifier = Modifier
                     .weight(1f)
                     .padding(start = dimensionResource(R.dimen.padding_medium))) {
-                    Text(fontSize = 18.sp,text = stringResource(id = R.string.date_and_time, getDateInfo(uiState.driveDate),uiState.driveTime))
+                    Text(fontSize = 18.sp,text = stringResource(id = R.string.date_and_time, uiState.driveDate,uiState.driveTime))
                     Text(fontSize = 18.sp,text = stringResource(id = R.string.companionCardCities,uiState.from,uiState.to))
                 }
                 Column() {

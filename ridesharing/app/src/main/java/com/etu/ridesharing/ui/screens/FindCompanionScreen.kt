@@ -159,6 +159,8 @@ fun FindCompanionDialog(
     var filterPriceHight_temp by rememberSaveable { mutableStateOf(filterPriceHigh) }
     var isErrorDataF by rememberSaveable { mutableStateOf(false) }
     var isErrorDataT by rememberSaveable { mutableStateOf(false) }
+    var isErrorLow by rememberSaveable { mutableStateOf(false) }
+    var isErrorHight by rememberSaveable { mutableStateOf(false) }
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -196,6 +198,7 @@ fun FindCompanionDialog(
                             }else{
                                 isErrorDataF = filterDateFrom_temp.length == 8 && !checkValue(filterDateFrom_temp)
                             }
+                            isErrorDataF = filterDateFrom_temp.length == 8 && !checkValue(filterDateFrom_temp)
                         },
                         leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
                     )
@@ -218,35 +221,57 @@ fun FindCompanionDialog(
                             if (it.length <= maxCharDate){
                                 filterDateTo_temp = it
                             }
-                            if(filterDateTo_temp.length < 8 && filterDateTo_temp.length>0){
-                                isErrorDataT = true
-                            }else{
-                                isErrorDataT = filterDateTo_temp.length == 8 && !checkValue(filterDateTo_temp)
-                            }
+                            isErrorDataT = filterDateTo_temp.length == 8 && !checkValue(filterDateTo_temp)
                         },
                         leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
                     )
                     Text(text = "Цена:")
                     CustomTextField(
+                        isError = isErrorLow,
+                        supportingText = {
+                            if (isErrorLow){
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Отрицательное число",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
                         text = "От:",
                         type = "number",
                         label = { Text("тенге") },
                         value = filterPriceLow_temp,
                         onValueChange = {
                             filterPriceLow_temp = it
+                            isErrorLow = filterPriceLow_temp.toIntOrNull() ?: 0 <0
                         },
                     )
                     CustomTextField(
+                        isError = isErrorHight,
+                        supportingText = {
+                            if (isErrorHight){
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Отрицательное число",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
                         text = "До:",
                         type = "number",
                         label = { Text("тенге") },
                         value = filterPriceHight_temp,
                         onValueChange = {
                             filterPriceHight_temp = it
+                            isErrorHight = filterPriceHight_temp.toIntOrNull() ?: 0 <0
                         },
                     )
                     Button(onClick = {
-                        if(!isErrorDataF and !isErrorDataT){
+                        if(!(filterDateTo_temp.length == 8 && !checkValue(filterDateTo_temp)))
+                            isErrorDataT = filterDateTo_temp.length < 8 && filterDateTo_temp.length>0
+                        if(!(filterDateFrom_temp.length == 8 && !checkValue(filterDateFrom_temp)))
+                            isErrorDataF = filterDateFrom_temp.length < 8 && filterDateFrom_temp.length>0
+                        if(!isErrorDataF and !isErrorDataT and !isErrorHight and !isErrorLow){
                             changeValues(filterDateFrom_temp, filterDateTo_temp, filterPriceLow_temp,filterPriceHight_temp)
                             onDismissRequest()
                         } },
@@ -293,5 +318,5 @@ fun filterFun(item : DriveInfoState, from : String, to : String, priceLow : Stri
     if((priceHight == "")or(item.price <= priceHight.toIntOrNull() ?: 0)){
         flag4 = true
     }
-    return flag1 and flag2 and flag3 and flag4//(item.price > priceLow.toIntOrNull() ?: 0)//and (item.price <= priceHight.toIntOrNull() ?: 0)
+    return flag1 and flag2 and flag3 and flag4 and (item.driveId <10)
 }
