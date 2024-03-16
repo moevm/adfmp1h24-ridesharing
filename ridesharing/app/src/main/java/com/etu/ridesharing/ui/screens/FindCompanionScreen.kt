@@ -20,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,12 +37,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
-import com.etu.ridesharing.data.CarInfoState
-import com.etu.ridesharing.data.DataCitiesList
 import com.etu.ridesharing.data.DriveInfoState
 import com.etu.ridesharing.models.DriveInfoModel
-import com.etu.ridesharing.ui.components.AutoCompleteTextField
-import com.etu.ridesharing.ui.components.CarCard
 import com.etu.ridesharing.ui.components.CustomTextField
 import com.etu.ridesharing.ui.components.FindCompanionCard
 
@@ -159,6 +156,8 @@ fun FindCompanionDialog(
     var filterDateTo_temp by rememberSaveable { mutableStateOf(filterDateTo) }
     var filterPriceLow_temp by rememberSaveable { mutableStateOf(filterPriceLow) }
     var filterPriceHight_temp by rememberSaveable { mutableStateOf(filterPriceHigh) }
+    var isErrorDataF by rememberSaveable { mutableStateOf(false) }
+    var isErrorDataT by rememberSaveable { mutableStateOf(false) }
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -172,25 +171,58 @@ fun FindCompanionDialog(
                     modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp),
                 ) {
 
-                    val maxCharDate = 100
+                    val maxCharDate = 8
                     Text(text = "Дата:")
                     CustomTextField(
+                        isError = isErrorDataF,
+                        supportingText = {
+                            if (isErrorDataF){
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Неправильная дата",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
                         text = "от:",
                         type = "date",
-                        label = { Text("чч:мм дд/мм/гггг") },
+                        label = { Text("дд/мм/гггг") },
                         value = filterDateFrom_temp,
                         onValueChange = {
-                            if (it.length <= maxCharDate) filterDateFrom_temp = it
+                            if (it.length <= maxCharDate){
+                                filterDateFrom_temp = it}
+                            if(filterDateFrom_temp.length < 8 && filterDateFrom_temp.length>0){
+                                isErrorDataF = true
+                            }else{
+                                isErrorDataF = filterDateFrom_temp.length == 8 && !checkValue(filterDateFrom_temp)
+                            }
                         },
                         leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
                     )
                     CustomTextField(
+                        isError = isErrorDataT,
+                        supportingText = {
+                            if (isErrorDataT){
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Неправильная дата",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
                         text = "до:",
                         type = "date",
-                        label = { Text("чч:мм дд/мм/гггг") },
+                        label = { Text("дд/мм/гггг") },
                         value = filterDateTo_temp,
                         onValueChange = {
-                            if (it.length <= maxCharDate) filterDateTo_temp = it
+                            if (it.length <= maxCharDate){
+                                filterDateTo_temp = it
+                            }
+                            if(filterDateTo_temp.length < 8 && filterDateTo_temp.length>0){
+                                isErrorDataT = true
+                            }else{
+                                isErrorDataT = filterDateTo_temp.length == 8 && !checkValue(filterDateTo_temp)
+                            }
                         },
                         leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
                     )
@@ -214,8 +246,10 @@ fun FindCompanionDialog(
                         },
                     )
                     Button(onClick = {
-                        changeValues(filterDateFrom_temp, filterDateTo_temp, filterPriceLow_temp,filterPriceHight_temp)
-                        onDismissRequest() },
+                        if(!isErrorDataF and !isErrorDataT){
+                            changeValues(filterDateFrom_temp, filterDateTo_temp, filterPriceLow_temp,filterPriceHight_temp)
+                            onDismissRequest()
+                        } },
                         modifier = Modifier.padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
                         Text("Применить фильтры")
                     }
@@ -235,7 +269,6 @@ fun filterFun(item : DriveInfoState, from : String, to : String, priceLow : Stri
     var flag2 = false
     var flag3 = false
     var flag4 = false
-
     if(from == "") {
         flag1 = true
     }
