@@ -262,7 +262,9 @@ fun RidesharingApp(
                 ) { backStackEntry ->
                     //val driveId = Integer.parseInt(backStackEntry.arguments?.getString("driveId"))
                     val driveId = backStackEntry.arguments?.getString("driveId")
-                    DriveScreen(driveModel = driveList[Integer.parseInt(driveId)])
+                    DriveScreen(onBackStrack = { navController.popBackStack() },
+                        driveModel = driveList[Integer.parseInt(driveId)],
+                        user = currentUser)
                     //
                 }
             }
