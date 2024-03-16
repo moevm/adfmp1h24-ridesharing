@@ -37,7 +37,7 @@ fun MyDrivesScreen(
 ) {
     val openAlertDialog = remember { mutableStateOf(openDialog) }
     val driveState = DriveInfoState()
-    val compDriveModel = DriveModel()
+    //val compDriveModel = DriveModel()
     val drivesState = remember { mutableStateOf(user.userDrives.toMutableList())}
     when {
         // ...

@@ -36,10 +36,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
+import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.data.DataCitiesList
 import com.etu.ridesharing.data.DriveInfoState
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.components.AutoCompleteTextField
+import com.etu.ridesharing.ui.components.CarCard
 import com.etu.ridesharing.ui.components.CustomTextField
 import com.etu.ridesharing.ui.components.FindCompanionCard
 
@@ -50,11 +52,25 @@ fun FindCompanionScreen(
     modifier: Modifier = Modifier
 ) {
     val openAlertDialog = remember { mutableStateOf(false) }
+    var filterDateFrom by rememberSaveable { mutableStateOf("") }
+    var filterDateTo by rememberSaveable { mutableStateOf("") }
+    var filterPriceLow by rememberSaveable { mutableStateOf("") }
+    var filterPriceHigh by rememberSaveable { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     when {
         openAlertDialog.value -> {
             FindCompanionDialog(
                 onDismissRequest = { openAlertDialog.value = false },
+                filterDateFrom =  filterDateFrom,
+                filterDateTo = filterDateTo,
+                filterPriceLow = filterPriceLow,
+                filterPriceHigh = filterPriceHigh,
+                changeValues = { dateFrom,dateTo,priceLow, priceHigh->
+                    filterDateFrom = dateFrom
+                    filterDateTo = dateTo
+                    filterPriceLow =priceLow
+                    filterPriceHigh= priceHigh
+                },
             )
         }
     }
@@ -95,18 +111,28 @@ fun FindCompanionScreen(
 
             }
             LazyColumn(modifier = Modifier.padding(top = 32.dp)) {
-                items(companionDrivesList.size) { driveIndex ->
+                var filtered = companionDrivesList.filter {
+                    filterFun(
+                        it,
+                        filterDateFrom,
+                        filterDateTo,
+                        filterPriceLow,
+                        filterPriceHigh
+                    )
+                }
+                items(filtered.size) { driveIndex ->
                     if (driveIndex > 0) {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                     FindCompanionCard(
                         onItemClick = onItemClick,
-                        driveInfoModel = DriveInfoModel( companionDrivesList[driveIndex]),
+                        driveInfoModel = DriveInfoModel( filtered[driveIndex]),
                         modifier = modifier
                             .size(width = 350.dp, height = 150.dp),
                     )
                 }
             }
+
         }
         FloatingActionButton(
             onClick = { openAlertDialog.value = true },
@@ -123,11 +149,16 @@ fun FindCompanionScreen(
 @Composable
 fun FindCompanionDialog(
     onDismissRequest: () -> Unit,
+    filterDateFrom: String,
+    filterDateTo: String,
+    filterPriceLow: String,
+    filterPriceHigh: String,
+    changeValues:(String, String, String,String)->Unit,
 ) {
-    var filterDateFrom by rememberSaveable { mutableStateOf("") }
-    var filterDateTo by rememberSaveable { mutableStateOf("") }
-    var filterPriceLow by rememberSaveable { mutableStateOf("") }
-    var filterPriceHigh by rememberSaveable { mutableStateOf("") }
+    var filterDateFrom_temp by rememberSaveable { mutableStateOf(filterDateFrom) }
+    var filterDateTo_temp by rememberSaveable { mutableStateOf(filterDateTo) }
+    var filterPriceLow_temp by rememberSaveable { mutableStateOf(filterPriceLow) }
+    var filterPriceHight_temp by rememberSaveable { mutableStateOf(filterPriceHigh) }
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -145,21 +176,21 @@ fun FindCompanionDialog(
                     Text(text = "Дата:")
                     CustomTextField(
                         text = "от:",
-                        type = "dateTime",
+                        type = "date",
                         label = { Text("чч:мм дд/мм/гггг") },
-                        value = filterDateFrom,
+                        value = filterDateFrom_temp,
                         onValueChange = {
-                            if (it.length <= maxCharDate) filterDateFrom = it
+                            if (it.length <= maxCharDate) filterDateFrom_temp = it
                         },
                         leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
                     )
                     CustomTextField(
                         text = "до:",
-                        type = "dateTime",
+                        type = "date",
                         label = { Text("чч:мм дд/мм/гггг") },
-                        value = filterDateTo,
+                        value = filterDateTo_temp,
                         onValueChange = {
-                            if (it.length <= maxCharDate) filterDateTo = it
+                            if (it.length <= maxCharDate) filterDateTo_temp = it
                         },
                         leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
                     )
@@ -168,21 +199,24 @@ fun FindCompanionDialog(
                         text = "От:",
                         type = "number",
                         label = { Text("тенге") },
-                        value = filterPriceLow,
+                        value = filterPriceLow_temp,
                         onValueChange = {
-                            filterPriceLow = it
+                            filterPriceLow_temp = it
                         },
                     )
                     CustomTextField(
                         text = "До:",
                         type = "number",
                         label = { Text("тенге") },
-                        value = filterPriceHigh,
+                        value = filterPriceHight_temp,
                         onValueChange = {
-                            filterPriceHigh = it
+                            filterPriceHight_temp = it
                         },
                     )
-                    Button(onClick = { onDismissRequest() }, modifier = Modifier.padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
+                    Button(onClick = {
+                        changeValues(filterDateFrom_temp, filterDateTo_temp, filterPriceLow_temp,filterPriceHight_temp)
+                        onDismissRequest() },
+                        modifier = Modifier.padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
                         Text("Применить фильтры")
                     }
                 }
@@ -194,4 +228,25 @@ fun FindCompanionDialog(
             }
         }
     }
+}
+
+fun filterFun(item : DriveInfoState, from : String, to : String, priceLow : String, priceHight : String) : Boolean{
+    var flag1 = false
+    var flag2 = false
+    var flag3 = false
+    var flag4 = false
+
+    if(from == "") {
+        flag1 = true
+    }
+    if(to == ""){
+        flag2 = true
+    }
+    if((priceLow == "")or(item.price >= priceLow.toIntOrNull() ?: 0)){
+        flag3 = true
+    }
+    if((priceHight == "")or(item.price <= priceHight.toIntOrNull() ?: 0)){
+        flag4 = true
+    }
+    return flag1 and flag2 and flag3 and flag4//(item.price > priceLow.toIntOrNull() ?: 0)//and (item.price <= priceHight.toIntOrNull() ?: 0)
 }
