@@ -18,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,6 +42,7 @@ import com.etu.ridesharing.R
 import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.data.DriveInfoState
 import com.etu.ridesharing.models.DriveInfoModel
+import com.etu.ridesharing.ui.screens.checkValue
 
 @Composable
 fun MyDriveCard(
@@ -123,6 +125,16 @@ fun MyDriveDialog(
 
                         val maxCharDate = 8
                         CustomTextField(
+                            isError = driveDate.length == 8 && !checkValue(driveDate),
+                            supportingText = {
+                                if (driveDate.length == 8 && !checkValue(driveDate)){
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = "Неправильная дата",
+                                        color = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            },
                             text = "Дата:",
                             type = "date",
                             label = { Text("дд/мм/гггг") },
