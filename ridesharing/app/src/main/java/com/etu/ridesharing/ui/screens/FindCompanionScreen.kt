@@ -41,6 +41,7 @@ import com.etu.ridesharing.data.DriveInfoState
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.components.CustomTextField
 import com.etu.ridesharing.ui.components.FindCompanionCard
+import java.text.SimpleDateFormat
 
 @Composable
 fun FindCompanionScreen(
@@ -170,7 +171,6 @@ fun FindCompanionDialog(
 
                     modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp),
                 ) {
-
                     val maxCharDate = 8
                     Text(text = "Дата:")
                     CustomTextField(
@@ -264,6 +264,14 @@ fun FindCompanionDialog(
     }
 }
 
+
+fun isDateBefore(date1: String, date2: String): Boolean {
+    val dateFormat = SimpleDateFormat("ddMMyyyy")
+    val parsedDate1 = dateFormat.parse(date1)
+    val parsedDate2 = dateFormat.parse(date2)
+    return parsedDate1.before(parsedDate2) or (parsedDate1 == parsedDate2)
+}
+
 fun filterFun(item : DriveInfoState, from : String, to : String, priceLow : String, priceHight : String) : Boolean{
     var flag1 = false
     var flag2 = false
@@ -271,9 +279,13 @@ fun filterFun(item : DriveInfoState, from : String, to : String, priceLow : Stri
     var flag4 = false
     if(from == "") {
         flag1 = true
+    }else{
+        flag1 = isDateBefore(from, item.driveDate.replace(".", ""))
     }
     if(to == ""){
         flag2 = true
+    }else{
+        flag2 = isDateBefore(item.driveDate.replace(".", ""),to)
     }
     if((priceLow == "")or(item.price >= priceLow.toIntOrNull() ?: 0)){
         flag3 = true

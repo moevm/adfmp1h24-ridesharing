@@ -5,7 +5,7 @@ import com.etu.ridesharing.models.DriveInfoModel
 object DataDriveInfoList {
     val driveList = mutableListOf<DriveInfoState>(
         DriveInfoState(
-            driveDate = "01.02.24",
+            driveDate = "01.02.2024",
             driveTime =  "21:30",
             from = "Алма-Ата",
             to = "Астана",
@@ -14,7 +14,7 @@ object DataDriveInfoList {
             driveId = 0,
         ),
         DriveInfoState(
-            driveDate = "02.02.24",
+            driveDate = "02.02.2024",
             driveTime =  "19:00",
             from = "Астана",
             to = "Актобе",
@@ -23,7 +23,7 @@ object DataDriveInfoList {
             driveId = 1,
         ),
         DriveInfoState(
-            driveDate = "03.02.24",
+            driveDate = "03.02.2024",
             driveTime =  "15:30",
             from = "Караганда",
             to = "Тараз",
@@ -32,7 +32,7 @@ object DataDriveInfoList {
             driveId = 2,
         ),
         DriveInfoState(
-            driveDate = "03.02.24",
+            driveDate = "03.02.2024",
             driveTime =  "12:30",
             from = "Костанай",
             to = "Туркестан",
@@ -41,7 +41,7 @@ object DataDriveInfoList {
             driveId = 3,
         ),
         DriveInfoState(
-            driveDate = "04.02.24",
+            driveDate = "04.02.2024",
             driveTime =  "16:30",
             from = "Актау",
             to = "Семей",
@@ -50,7 +50,7 @@ object DataDriveInfoList {
             driveId = 4,
         ),
         DriveInfoState(
-            driveDate = "05.02.24",
+            driveDate = "05.02.2024",
             driveTime =  "13:00",
             from = "Семей",
             to = "Костанай",
@@ -59,7 +59,7 @@ object DataDriveInfoList {
             driveId = 5,
         ),
         DriveInfoState(
-            driveDate = "06.02.24",
+            driveDate = "06.02.2024",
             driveTime =  "11:00",
             from = "Костанай",
             to = "Астана",
@@ -68,7 +68,7 @@ object DataDriveInfoList {
             driveId = 6,
         ),
         DriveInfoState(
-            driveDate = "06.02.24",
+            driveDate = "06.02.2024",
             driveTime =  "15:30",
             from = "Актобе",
             to = "Алма-Ата",
@@ -77,7 +77,7 @@ object DataDriveInfoList {
             driveId = 7,
         ),
         DriveInfoState(
-            driveDate = "06.02.24",
+            driveDate = "06.02.2024",
             driveTime =  "16:30",
             from = "Алма-Ата",
             to = "Туркестан",
@@ -86,7 +86,7 @@ object DataDriveInfoList {
             driveId = 8,
         ),
         DriveInfoState(
-            driveDate = "08.02.24",
+            driveDate = "08.02.2024",
             driveTime =  "10:30",
             from = "Туркестан",
             to = "Караганда",
