@@ -129,15 +129,6 @@ fun CarDialog(
                 Column(
                     modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp)
                 ) {
-                    /*CustomTextField(
-                        text = "Марка:",
-                        type = "text",
-                        label = { Text("Марка автомобиля") },
-                        value = brand,
-                        onValueChange = {
-                            brand = it
-                        },
-                    )*/
                     AutoCompleteTextField(
                         isError = isErrorBrand,
                         supportingText = {
@@ -197,15 +188,6 @@ fun CarDialog(
                         label = "Цвет автомобиля",
                         categories = CarSelectOptions.colors
                     )
-                    /*CustomTextField(
-                        text = "Цвет: ",
-                        type = "text",
-                        label = { Text("Цвет автомобиля") },
-                        value = color,
-                        onValueChange = {
-                            color = it
-                        },
-                    )*/
                     Spacer(modifier = Modifier.padding(vertical = 8.dp))
                     Button(onClick = {
                         if(!isErrorNumber && !isErrorBrand && !isErrorColor){

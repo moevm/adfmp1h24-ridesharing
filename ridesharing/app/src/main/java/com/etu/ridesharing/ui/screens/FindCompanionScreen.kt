@@ -20,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,25 +37,42 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
-import com.etu.ridesharing.data.DataCitiesList
 import com.etu.ridesharing.data.DriveInfoState
+import com.etu.ridesharing.data.UserState
 import com.etu.ridesharing.models.DriveInfoModel
-import com.etu.ridesharing.ui.components.AutoCompleteTextField
 import com.etu.ridesharing.ui.components.CustomTextField
 import com.etu.ridesharing.ui.components.FindCompanionCard
+import java.text.SimpleDateFormat
+import java.util.UUID
 
 @Composable
 fun FindCompanionScreen(
+    usersList: MutableList<UserState>,
+    currentUser: UserState,
     companionDrivesList: MutableList<DriveInfoState>,
-    onItemClick: (Int) -> Unit,
+    onItemClick: (Int, UUID?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val openAlertDialog = remember { mutableStateOf(false) }
+    var filterDateFrom by rememberSaveable { mutableStateOf("") }
+    var filterDateTo by rememberSaveable { mutableStateOf("") }
+    var filterPriceLow by rememberSaveable { mutableStateOf("") }
+    var filterPriceHigh by rememberSaveable { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     when {
         openAlertDialog.value -> {
             FindCompanionDialog(
                 onDismissRequest = { openAlertDialog.value = false },
+                filterDateFrom =  filterDateFrom,
+                filterDateTo = filterDateTo,
+                filterPriceLow = filterPriceLow,
+                filterPriceHigh = filterPriceHigh,
+                changeValues = { dateFrom,dateTo,priceLow, priceHigh->
+                    filterDateFrom = dateFrom
+                    filterDateTo = dateTo
+                    filterPriceLow =priceLow
+                    filterPriceHigh= priceHigh
+                },
             )
         }
     }
@@ -95,18 +113,38 @@ fun FindCompanionScreen(
 
             }
             LazyColumn(modifier = Modifier.padding(top = 32.dp)) {
-                items(companionDrivesList.size) { driveIndex ->
-                    if (driveIndex > 0) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-                    FindCompanionCard(
-                        onItemClick = onItemClick,
-                        driveInfoModel = DriveInfoModel( companionDrivesList[driveIndex]),
-                        modifier = modifier
-                            .size(width = 350.dp, height = 150.dp),
+                var filtUsers = usersList.filter {
+                    filterUser(
+                        it,
+                        currentUser
                     )
                 }
+                filtUsers.forEach{user ->
+                    var filtered = user.userDrives.filter {
+                        filterFun(
+                            it,
+                            filterDateFrom,
+                            filterDateTo,
+                            filterPriceLow,
+                            filterPriceHigh
+                        )
+                    }
+                    items(filtered.size) { driveIndex ->
+                        if (driveIndex > 0) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                        FindCompanionCard(
+                            user = user,
+                            onItemClick = onItemClick,
+                            driveInfoModel = DriveInfoModel( filtered[driveIndex]),
+                            modifier = modifier
+                                .size(width = 350.dp, height = 150.dp),
+                        )
+                    }
+
+                }
             }
+
         }
         FloatingActionButton(
             onClick = { openAlertDialog.value = true },
@@ -123,11 +161,20 @@ fun FindCompanionScreen(
 @Composable
 fun FindCompanionDialog(
     onDismissRequest: () -> Unit,
+    filterDateFrom: String,
+    filterDateTo: String,
+    filterPriceLow: String,
+    filterPriceHigh: String,
+    changeValues:(String, String, String,String)->Unit,
 ) {
-    var filterDateFrom by rememberSaveable { mutableStateOf("") }
-    var filterDateTo by rememberSaveable { mutableStateOf("") }
-    var filterPriceLow by rememberSaveable { mutableStateOf("") }
-    var filterPriceHigh by rememberSaveable { mutableStateOf("") }
+    var filterDateFrom_temp by rememberSaveable { mutableStateOf(filterDateFrom) }
+    var filterDateTo_temp by rememberSaveable { mutableStateOf(filterDateTo) }
+    var filterPriceLow_temp by rememberSaveable { mutableStateOf(filterPriceLow) }
+    var filterPriceHight_temp by rememberSaveable { mutableStateOf(filterPriceHigh) }
+    var isErrorDataF by rememberSaveable { mutableStateOf(false) }
+    var isErrorDataT by rememberSaveable { mutableStateOf(false) }
+    var isErrorLow by rememberSaveable { mutableStateOf(false) }
+    var isErrorHight by rememberSaveable { mutableStateOf(false) }
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -140,49 +187,109 @@ fun FindCompanionDialog(
 
                     modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp),
                 ) {
-
-                    val maxCharDate = 100
+                    val maxCharDate = 8
                     Text(text = "Дата:")
                     CustomTextField(
+                        isError = isErrorDataF,
+                        supportingText = {
+                            if (isErrorDataF){
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Неправильная дата",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
                         text = "от:",
-                        type = "dateTime",
-                        label = { Text("чч:мм дд/мм/гггг") },
-                        value = filterDateFrom,
+                        type = "date",
+                        label = { Text("дд/мм/гггг") },
+                        value = filterDateFrom_temp,
                         onValueChange = {
-                            if (it.length <= maxCharDate) filterDateFrom = it
+                            if (it.length <= maxCharDate){
+                                filterDateFrom_temp = it}
+                            if(filterDateFrom_temp.length < 8 && filterDateFrom_temp.length>0){
+                                isErrorDataF = true
+                            }else{
+                                isErrorDataF = filterDateFrom_temp.length == 8 && !checkValue(filterDateFrom_temp)
+                            }
+                            isErrorDataF = filterDateFrom_temp.length == 8 && !checkValue(filterDateFrom_temp)
                         },
                         leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
                     )
                     CustomTextField(
+                        isError = isErrorDataT,
+                        supportingText = {
+                            if (isErrorDataT){
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Неправильная дата",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
                         text = "до:",
-                        type = "dateTime",
-                        label = { Text("чч:мм дд/мм/гггг") },
-                        value = filterDateTo,
+                        type = "date",
+                        label = { Text("дд/мм/гггг") },
+                        value = filterDateTo_temp,
                         onValueChange = {
-                            if (it.length <= maxCharDate) filterDateTo = it
+                            if (it.length <= maxCharDate){
+                                filterDateTo_temp = it
+                            }
+                            isErrorDataT = filterDateTo_temp.length == 8 && !checkValue(filterDateTo_temp)
                         },
                         leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
                     )
                     Text(text = "Цена:")
                     CustomTextField(
+                        isError = isErrorLow,
+                        supportingText = {
+                            if (isErrorLow){
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Отрицательное число",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
                         text = "От:",
                         type = "number",
                         label = { Text("тенге") },
-                        value = filterPriceLow,
+                        value = filterPriceLow_temp,
                         onValueChange = {
-                            filterPriceLow = it
+                            filterPriceLow_temp = it
+                            isErrorLow = filterPriceLow_temp.toIntOrNull() ?: 0 <0
                         },
                     )
                     CustomTextField(
+                        isError = isErrorHight,
+                        supportingText = {
+                            if (isErrorHight){
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = "Отрицательное число",
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
                         text = "До:",
                         type = "number",
                         label = { Text("тенге") },
-                        value = filterPriceHigh,
+                        value = filterPriceHight_temp,
                         onValueChange = {
-                            filterPriceHigh = it
+                            filterPriceHight_temp = it
+                            isErrorHight = filterPriceHight_temp.toIntOrNull() ?: 0 <0
                         },
                     )
-                    Button(onClick = { onDismissRequest() }, modifier = Modifier.padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
+                    Button(onClick = {
+                        if(!(filterDateTo_temp.length == 8 && !checkValue(filterDateTo_temp)))
+                            isErrorDataT = filterDateTo_temp.length < 8 && filterDateTo_temp.length>0
+                        if(!(filterDateFrom_temp.length == 8 && !checkValue(filterDateFrom_temp)))
+                            isErrorDataF = filterDateFrom_temp.length < 8 && filterDateFrom_temp.length>0
+                        if(!isErrorDataF and !isErrorDataT and !isErrorHight and !isErrorLow){
+                            changeValues(filterDateFrom_temp, filterDateTo_temp, filterPriceLow_temp,filterPriceHight_temp)
+                            onDismissRequest()
+                        } },
+                        modifier = Modifier.padding( top = 16.dp, start = 36.dp, bottom = 16.dp)) {
                         Text("Применить фильтры")
                     }
                 }
@@ -194,4 +301,39 @@ fun FindCompanionDialog(
             }
         }
     }
+}
+
+
+fun isDateBefore(date1: String, date2: String): Boolean {
+    val dateFormat = SimpleDateFormat("ddMMyyyy")
+    val parsedDate1 = dateFormat.parse(date1)
+    val parsedDate2 = dateFormat.parse(date2)
+    return parsedDate1.before(parsedDate2) or (parsedDate1 == parsedDate2)
+}
+
+fun filterFun(item : DriveInfoState, from : String, to : String, priceLow : String, priceHight : String) : Boolean{
+    var flag1 = false
+    var flag2 = false
+    var flag3 = false
+    var flag4 = false
+    if(from == "") {
+        flag1 = true
+    }else{
+        flag1 = isDateBefore(from, item.driveDate.replace(".", ""))
+    }
+    if(to == ""){
+        flag2 = true
+    }else{
+        flag2 = isDateBefore(item.driveDate.replace(".", ""),to)
+    }
+    if((priceLow == "")or(item.price >= priceLow.toIntOrNull() ?: 0)){
+        flag3 = true
+    }
+    if((priceHight == "")or(item.price <= priceHight.toIntOrNull() ?: 0)){
+        flag4 = true
+    }
+    return flag1 and flag2 and flag3 and flag4
+}
+fun filterUser(item:UserState,user:UserState): Boolean{
+    return item != user
 }

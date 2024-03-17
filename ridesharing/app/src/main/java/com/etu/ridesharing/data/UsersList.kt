@@ -8,7 +8,7 @@ object UsersList {
                 cars = DataCarInfoList.carList,
                 name = "Уолтер",
                 surname = "Уайт",
-                phoneNumber = "+7-918-203-66-76",
+                phoneNumber = "+9-999-999-99-99",
                 historyDrives = TravelHistoryList.travelList,
                 userDrives = DataDriveInfoList.driveList,
             ),
