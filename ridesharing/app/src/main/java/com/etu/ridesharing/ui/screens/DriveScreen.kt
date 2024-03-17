@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.etu.ridesharing.R
+import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.data.TravelHistoryList
 import com.etu.ridesharing.data.TravelHistoryState
 import com.etu.ridesharing.data.UserState
@@ -35,6 +36,7 @@ fun DriveScreen(
     onBackStrack: () -> Unit,
     driveModel: DriveModel,
     user: UserState,
+    userDrive:UserState,
     modifier: Modifier = Modifier
 ) {
     val uiState by driveModel.uiState.collectAsState()
@@ -54,13 +56,13 @@ fun DriveScreen(
             Card(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     fontSize = 26.sp,
-                    text = stringResource(id = R.string.driverFIO, uiState.driverName),
+                    text = stringResource(id = R.string.driverFIO, userDrive.name+" "+userDrive.surname+" "+userDrive.patronymic),
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
-            CarCard(uiState.carInfoState, modifier = Modifier)
+            CarCard(carInfo = userDrive.cars[0] ?: CarInfoState(), modifier = Modifier)
             Spacer(modifier = Modifier.height(32.dp))
             TravelHistoryCard(
                 travel = TravelHistoryState(

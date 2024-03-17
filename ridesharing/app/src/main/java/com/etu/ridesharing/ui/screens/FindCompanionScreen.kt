@@ -38,15 +38,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
 import com.etu.ridesharing.data.DriveInfoState
+import com.etu.ridesharing.data.UserState
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.components.CustomTextField
 import com.etu.ridesharing.ui.components.FindCompanionCard
 import java.text.SimpleDateFormat
+import java.util.UUID
 
 @Composable
 fun FindCompanionScreen(
+    usersList: MutableList<UserState>,
+    currentUser: UserState,
     companionDrivesList: MutableList<DriveInfoState>,
-    onItemClick: (Int) -> Unit,
+    onItemClick: (Int, UUID?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val openAlertDialog = remember { mutableStateOf(false) }
@@ -109,25 +113,35 @@ fun FindCompanionScreen(
 
             }
             LazyColumn(modifier = Modifier.padding(top = 32.dp)) {
-                var filtered = companionDrivesList.filter {
-                    filterFun(
+                var filtUsers = usersList.filter {
+                    filterUser(
                         it,
-                        filterDateFrom,
-                        filterDateTo,
-                        filterPriceLow,
-                        filterPriceHigh
+                        currentUser
                     )
                 }
-                items(filtered.size) { driveIndex ->
-                    if (driveIndex > 0) {
-                        Spacer(modifier = Modifier.height(16.dp))
+                filtUsers.forEach{user ->
+                    var filtered = user.userDrives.filter {
+                        filterFun(
+                            it,
+                            filterDateFrom,
+                            filterDateTo,
+                            filterPriceLow,
+                            filterPriceHigh
+                        )
                     }
-                    FindCompanionCard(
-                        onItemClick = onItemClick,
-                        driveInfoModel = DriveInfoModel( filtered[driveIndex]),
-                        modifier = modifier
-                            .size(width = 350.dp, height = 150.dp),
-                    )
+                    items(filtered.size) { driveIndex ->
+                        if (driveIndex > 0) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                        FindCompanionCard(
+                            user = user,
+                            onItemClick = onItemClick,
+                            driveInfoModel = DriveInfoModel( filtered[driveIndex]),
+                            modifier = modifier
+                                .size(width = 350.dp, height = 150.dp),
+                        )
+                    }
+
                 }
             }
 
@@ -318,5 +332,8 @@ fun filterFun(item : DriveInfoState, from : String, to : String, priceLow : Stri
     if((priceHight == "")or(item.price <= priceHight.toIntOrNull() ?: 0)){
         flag4 = true
     }
-    return flag1 and flag2 and flag3 and flag4 and (item.driveId <10)
+    return flag1 and flag2 and flag3 and flag4
+}
+fun filterUser(item:UserState,user:UserState): Boolean{
+    return item != user
 }

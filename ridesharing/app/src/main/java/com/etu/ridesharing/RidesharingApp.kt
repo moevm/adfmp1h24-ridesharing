@@ -32,8 +32,6 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.Saver
-import androidx.compose.runtime.saveable.SaverScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
@@ -42,7 +40,6 @@ import androidx.navigation.navArgument
 import com.etu.ridesharing.data.CarInfoState
 import com.etu.ridesharing.data.DataDriveInfoList
 import com.etu.ridesharing.data.DataProfileCarInfoModel
-import com.etu.ridesharing.models.CarInfoModel
 import com.etu.ridesharing.ui.screens.EditProfileScreen
 import com.etu.ridesharing.ui.screens.ProfileScreen
 import com.etu.ridesharing.ui.screens.RegistrationScreen
@@ -60,6 +57,7 @@ import com.etu.ridesharing.ui.screens.MyDrivesScreen
 import com.etu.ridesharing.ui.screens.SupportDialog
 import com.etu.ridesharing.ui.screens.TravelHistory
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 
 enum class RidesharingScreen(@StringRes val title: Int) {
@@ -134,6 +132,9 @@ fun RidesharingApp(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     // if(currentScreen.name !== RidesharingScreen.Primary.name) {
+    fun getUserById(userId: UUID): UserState {
+        return usersList.find { it.id == userId } ?: throw NoSuchElementException("User not found")
+    }
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -222,9 +223,11 @@ fun RidesharingApp(
                 }
                 composable(route = RidesharingScreen.FindCompanion.name) {
                     FindCompanionScreen(
+                        usersList = usersList,
+                        currentUser = currentUser,
                         companionDrivesList = myDrivesList,
-                        onItemClick = { selectedDriveId ->
-                            navController.navigate("${RidesharingScreen.Drive.name}?driveId=${selectedDriveId}")
+                        onItemClick = { selectedDriveId,userId ->
+                            navController.navigate("${RidesharingScreen.Drive.name}?driveId=${selectedDriveId}&userId=$userId")
                         })
                 }
                 composable(route = RidesharingScreen.CreateDrive.name) {
@@ -257,14 +260,16 @@ fun RidesharingApp(
                     AboutScreen()
                 }
                 composable(
-                    route = "Drive?driveId={driveId}",
-                    arguments = listOf(navArgument("driveId") { defaultValue = "" })
+                    route = "Drive?driveId={driveId}&userId={userId}",
+                    arguments = listOf(navArgument("driveId") { defaultValue = "" },
+                        navArgument("userId") { defaultValue = "" })
                 ) { backStackEntry ->
-                    //val driveId = Integer.parseInt(backStackEntry.arguments?.getString("driveId"))
+                    val userId = UUID.fromString(backStackEntry.arguments?.getString("userId"))
                     val driveId = backStackEntry.arguments?.getString("driveId")
                     DriveScreen(onBackStrack = { navController.popBackStack() },
                         driveModel = driveList[Integer.parseInt(driveId)],
-                        user = currentUser)
+                        user = currentUser,
+                        userDrive = getUserById(userId))
                     //
                 }
             }

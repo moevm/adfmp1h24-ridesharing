@@ -33,12 +33,15 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.etu.ridesharing.R
+import com.etu.ridesharing.data.UserState
 import com.etu.ridesharing.models.DriveInfoModel
 import java.util.Calendar
+import java.util.UUID
 
 @Composable
 fun FindCompanionCard(
-    onItemClick: (Int) -> Unit,
+    user: UserState,
+    onItemClick: (Int, UUID?) -> Unit,
     driveInfoModel: DriveInfoModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
@@ -64,7 +67,7 @@ fun FindCompanionCard(
             Row(
 
             ){
-                Button(onClick = {onItemClick(uiState.driveId)}
+                Button(onClick = {onItemClick(uiState.driveId, user.id) }
                     , modifier = Modifier.size(width = 200.dp, height = 60.dp)
                         .padding(start = 20.dp, top = 10.dp)) {
                     Text("Просмотреть")
