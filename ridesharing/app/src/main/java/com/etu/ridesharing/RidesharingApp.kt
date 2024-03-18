@@ -131,6 +131,9 @@ fun RidesharingApp(
     val messageList by remember { mutableStateOf(MessagesList) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    var dishnik by rememberSaveable { mutableStateOf("") }
+    var dTo by rememberSaveable { mutableStateOf("") }
+    var dFrom by rememberSaveable { mutableStateOf("") }
     // if(currentScreen.name !== RidesharingScreen.Primary.name) {
     fun getUserById(userId: UUID): UserState {
         return usersList.find { it.id == userId } ?: throw NoSuchElementException("User not found")
@@ -225,10 +228,15 @@ fun RidesharingApp(
                     FindCompanionScreen(
                         usersList = usersList,
                         currentUser = currentUser,
-                        companionDrivesList = myDrivesList,
+                        dishnik = dishnik,
+                        from = dFrom,
+                        to = dTo,
                         onItemClick = { selectedDriveId,userId ->
                             navController.navigate("${RidesharingScreen.Drive.name}?driveId=${selectedDriveId}&userId=$userId")
                         })
+                        dishnik=""
+                        dFrom=""
+                        dTo =""
                 }
                 composable(route = RidesharingScreen.CreateDrive.name) {
                     MyDrivesScreen(
@@ -249,6 +257,7 @@ fun RidesharingApp(
                         onBackStrack = { navController.popBackStack() },
                         userState = currentUser
                     )
+
                 }
                 composable(route = RidesharingScreen.Support.name) {
                     SupportDialog(messagesList = messageList)
@@ -267,13 +276,20 @@ fun RidesharingApp(
                     val userId = UUID.fromString(backStackEntry.arguments?.getString("userId"))
                     val driveId = backStackEntry.arguments?.getString("driveId")
                     DriveScreen(onBackStrack = { navController.popBackStack() },
+                        onItemClick1 = {id ->
+                                       dishnik = id
+                                        navController.navigate(RidesharingScreen.FindCompanion.name)
+                        },
+                        onItemClick2 = {from,to->
+                                       dFrom = from
+                                       dTo = to
+                            navController.navigate(RidesharingScreen.FindCompanion.name)
+                        },
                         driveModel = driveList[Integer.parseInt(driveId)],
                         user = currentUser,
                         userDrive = getUserById(userId))
-                    //
                 }
             }
         }
     }
-    //  }
 }
