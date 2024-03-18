@@ -1,5 +1,7 @@
 package com.etu.ridesharing.ui.components
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Edit
@@ -30,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -45,6 +49,7 @@ import com.etu.ridesharing.data.DataCitiesList
 import com.etu.ridesharing.data.DriveInfoState
 import com.etu.ridesharing.models.DriveInfoModel
 import com.etu.ridesharing.ui.screens.checkValue
+import java.util.Calendar
 
 @Composable
 fun MyDriveCard(
@@ -115,6 +120,28 @@ fun MyDriveDialog(
     var isErrorPrice by rememberSaveable { mutableStateOf(false) }
     var isErrorNumber by rememberSaveable { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
+
+    val mContext = LocalContext.current
+    val mYear: Int
+    val mMonth: Int
+    val mDay: Int
+
+    // Initializing a Calendar
+    val mCalendar = Calendar.getInstance()
+
+    // Fetching current year, month and day
+    mYear = mCalendar.get(Calendar.YEAR)
+    mMonth = mCalendar.get(Calendar.MONTH)
+    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+
+    val DatePickerDialog = DatePickerDialog(
+        mContext,
+        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+            driveDate = "${mDayOfMonth.toString().padStart(2,'0')}${(mMonth+1).toString().padStart(2,'0')}$mYear"
+        }, mYear, mMonth, mDay
+    )
+
+
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -130,7 +157,6 @@ fun MyDriveDialog(
                 Column(
                     modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp)
                 ) {
-
                         val maxCharDate = 8
                         CustomTextField(
                             isError = isErrorData,
@@ -153,7 +179,9 @@ fun MyDriveDialog(
                                 }
                                 isErrorData = driveDate.length == 8 && !checkValue(driveDate)
                             },
-                            leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
+                            leadIcon = { IconButton(onClick = { DatePickerDialog.show() }) {
+                                Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
+                            } }
                         )
 
                         val maxCharTime = 4

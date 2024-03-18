@@ -1,5 +1,7 @@
 package com.etu.ridesharing.ui.screens
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Button
@@ -32,17 +36,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
+import com.etu.ridesharing.data.DataCitiesList
 import com.etu.ridesharing.data.DriveInfoState
 import com.etu.ridesharing.data.UserState
 import com.etu.ridesharing.models.DriveInfoModel
+import com.etu.ridesharing.ui.components.AutoCompleteTextField
 import com.etu.ridesharing.ui.components.CustomTextField
 import com.etu.ridesharing.ui.components.FindCompanionCard
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.UUID
 
 @Composable
@@ -61,8 +69,6 @@ fun FindCompanionScreen(
     var filterPriceLow by rememberSaveable { mutableStateOf("") }
     var filterPriceHigh by rememberSaveable { mutableStateOf("") }
     val dish by rememberSaveable { mutableStateOf(dishnik) }
-    val dfrom by rememberSaveable { mutableStateOf(from) }
-    val dto by rememberSaveable { mutableStateOf(to) }
     val filterUsers = usersList.filter {
         filterUser(
             it,
@@ -71,6 +77,8 @@ fun FindCompanionScreen(
         )
     }
     val drivesUsers by rememberSaveable { mutableStateOf(filterUsers) }
+    var filterSearchFrom by rememberSaveable { mutableStateOf(from) }
+    var filterSearchTo by rememberSaveable { mutableStateOf(to) }
     val focusManager = LocalFocusManager.current
     when {
         openAlertDialog.value -> {
@@ -111,7 +119,7 @@ fun FindCompanionScreen(
                 Column(
                     modifier = Modifier.weight(1.5f).padding(start = 2.dp)
                 ) {
-                    //AutoCompleteTextField(categories = DataCitiesList.citiesList, label = "Откуда")
+                    AutoCompleteTextField(categories = DataCitiesList.citiesList, label = "Откуда", value = filterSearchFrom, onValueChange = {filterSearchFrom = it})
                 }
                 Column(
                     modifier = Modifier.weight(0.1f)
@@ -121,7 +129,7 @@ fun FindCompanionScreen(
                 Column(
                     modifier = Modifier.weight(1.5f).padding(end = 2.dp)
                 ) {
-                   // AutoCompleteTextField(categories = DataCitiesList.citiesList, label = "Куда")
+                    AutoCompleteTextField(categories = DataCitiesList.citiesList, label = "Куда", value = filterSearchTo, onValueChange = {filterSearchTo = it})
                 }
 
             }
@@ -134,8 +142,8 @@ fun FindCompanionScreen(
                             filterDateTo,
                             filterPriceLow,
                             filterPriceHigh,
-                            dfrom,
-                            dto
+                            filterSearchFrom,
+                            filterSearchTo
                         )
                     }
                     items(filtered.size) { driveIndex ->
@@ -184,6 +192,34 @@ fun FindCompanionDialog(
     var isErrorDataT by rememberSaveable { mutableStateOf(false) }
     var isErrorLow by rememberSaveable { mutableStateOf(false) }
     var isErrorHight by rememberSaveable { mutableStateOf(false) }
+
+    val mContext = LocalContext.current
+    val mYear: Int
+    val mMonth: Int
+    val mDay: Int
+
+    // Initializing a Calendar
+    val mCalendar = Calendar.getInstance()
+
+    // Fetching current year, month and day
+    mYear = mCalendar.get(Calendar.YEAR)
+    mMonth = mCalendar.get(Calendar.MONTH)
+    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+
+    val DatePickerDialog1 = DatePickerDialog(
+        mContext,
+        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+            filterDateFrom_temp = "${mDayOfMonth.toString().padStart(2,'0')}${(mMonth+1).toString().padStart(2,'0')}$mYear"
+        }, mYear, mMonth, mDay
+    )
+
+    val DatePickerDialog2 = DatePickerDialog(
+        mContext,
+        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+            filterDateTo_temp = "${mDayOfMonth.toString().padStart(2,'0')}${(mMonth+1).toString().padStart(2,'0')}$mYear"
+        }, mYear, mMonth, mDay
+    )
+
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -197,12 +233,12 @@ fun FindCompanionDialog(
                 ) {
                     val maxCharDate = 8
                     Text(text = "Дата:")
+
                     CustomTextField(
                         isError = isErrorDataF,
                         supportingText = {
                             if (isErrorDataF){
                                 Text(
-                                    modifier = Modifier.fillMaxWidth(),
                                     text = "Неправильная дата",
                                     color = MaterialTheme.colorScheme.error
                                 )
@@ -222,14 +258,16 @@ fun FindCompanionDialog(
                             }
                             isErrorDataF = filterDateFrom_temp.length == 8 && !checkValue(filterDateFrom_temp)
                         },
-                        leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
+                        leadIcon = { IconButton(onClick = { DatePickerDialog1.show() }) {
+                            Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
+                        } }
                     )
+
                     CustomTextField(
                         isError = isErrorDataT,
                         supportingText = {
                             if (isErrorDataT){
                                 Text(
-                                    modifier = Modifier.fillMaxWidth(),
                                     text = "Неправильная дата",
                                     color = MaterialTheme.colorScheme.error
                                 )
@@ -245,8 +283,11 @@ fun FindCompanionDialog(
                             }
                             isErrorDataT = filterDateTo_temp.length == 8 && !checkValue(filterDateTo_temp)
                         },
-                        leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
+                        leadIcon = { IconButton(onClick = { DatePickerDialog2.show() }) {
+                            Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
+                        } }
                     )
+
                     Text(text = "Цена:")
                     CustomTextField(
                         isError = isErrorLow,

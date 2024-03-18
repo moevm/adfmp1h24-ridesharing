@@ -62,10 +62,14 @@ fun SupportDialog(
                     MessageCardLeft(
                         text = messagesList.MessageList[driveIndex].message,
                         author = messagesList.MessageList[driveIndex].author,
+                        date = messagesList.MessageList[driveIndex].date,
+                        time = messagesList.MessageList[driveIndex].time,
                     )
                 } else {
                     MessageCardRight(
                         text = messagesList.MessageList[driveIndex].message,
+                        date = messagesList.MessageList[driveIndex].date,
+                        time = messagesList.MessageList[driveIndex].time,
                     )
                 }
             }
