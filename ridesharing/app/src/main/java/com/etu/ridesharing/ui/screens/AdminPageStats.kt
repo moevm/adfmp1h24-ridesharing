@@ -120,7 +120,7 @@ fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, 
                 label = { Text("дд/мм/гггг") },
                 value = textTo,
                 onValueChange = {onChange2(it)},
-                leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
+                //leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
             )
             IconButton(onClick = { DatePickerDialog2.show() }) {
                 Icon(Icons.Filled.DateRange, contentDescription = "Localized description")

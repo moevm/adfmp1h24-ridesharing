@@ -1,5 +1,7 @@
 package com.etu.ridesharing.ui.screens
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Button
@@ -32,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -45,6 +50,7 @@ import com.etu.ridesharing.ui.components.AutoCompleteTextField
 import com.etu.ridesharing.ui.components.CustomTextField
 import com.etu.ridesharing.ui.components.FindCompanionCard
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.UUID
 
 @Composable
@@ -181,6 +187,34 @@ fun FindCompanionDialog(
     var isErrorDataT by rememberSaveable { mutableStateOf(false) }
     var isErrorLow by rememberSaveable { mutableStateOf(false) }
     var isErrorHight by rememberSaveable { mutableStateOf(false) }
+
+    val mContext = LocalContext.current
+    val mYear: Int
+    val mMonth: Int
+    val mDay: Int
+
+    // Initializing a Calendar
+    val mCalendar = Calendar.getInstance()
+
+    // Fetching current year, month and day
+    mYear = mCalendar.get(Calendar.YEAR)
+    mMonth = mCalendar.get(Calendar.MONTH)
+    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+
+    val DatePickerDialog1 = DatePickerDialog(
+        mContext,
+        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+            filterDateFrom_temp = "${mDayOfMonth.toString().padStart(2,'0')}${(mMonth+1).toString().padStart(2,'0')}$mYear"
+        }, mYear, mMonth, mDay
+    )
+
+    val DatePickerDialog2 = DatePickerDialog(
+        mContext,
+        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+            filterDateTo_temp = "${mDayOfMonth.toString().padStart(2,'0')}${(mMonth+1).toString().padStart(2,'0')}$mYear"
+        }, mYear, mMonth, mDay
+    )
+
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier
@@ -190,12 +224,12 @@ fun FindCompanionDialog(
             Row(
             ){
                 Column(
-
                     modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp),
                 ) {
                     val maxCharDate = 8
                     Text(text = "Дата:")
-                    CustomTextField(
+                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()){
+                        CustomTextField(
                         isError = isErrorDataF,
                         supportingText = {
                             if (isErrorDataF){
@@ -220,14 +254,18 @@ fun FindCompanionDialog(
                             }
                             isErrorDataF = filterDateFrom_temp.length == 8 && !checkValue(filterDateFrom_temp)
                         },
-                        leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
+                        //leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
                     )
-                    CustomTextField(
+                        IconButton(onClick = { DatePickerDialog1.show() }) {
+                            Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
+                        }
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically){
+                        CustomTextField(
                         isError = isErrorDataT,
                         supportingText = {
                             if (isErrorDataT){
                                 Text(
-                                    modifier = Modifier.fillMaxWidth(),
                                     text = "Неправильная дата",
                                     color = MaterialTheme.colorScheme.error
                                 )
@@ -243,8 +281,13 @@ fun FindCompanionDialog(
                             }
                             isErrorDataT = filterDateTo_temp.length == 8 && !checkValue(filterDateTo_temp)
                         },
-                        leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
+                        //leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
                     )
+                        IconButton(onClick = { DatePickerDialog2.show() }) {
+                            Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
+                        }
+                    }
+
                     Text(text = "Цена:")
                     CustomTextField(
                         isError = isErrorLow,
