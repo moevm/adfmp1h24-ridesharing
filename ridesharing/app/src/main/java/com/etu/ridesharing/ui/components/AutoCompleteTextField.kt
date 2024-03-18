@@ -44,7 +44,7 @@ fun AutoCompleteTextField(
     categories: List<String>,
     label: String,
     isError: Boolean = false,
-    supportingText: @Composable() (() -> Unit) = {Text(text = "error")},
+    supportingText: @Composable() (() -> Unit) = {Text(text = "")},
     onValueChange: (String) -> Unit = {/* TO DO */},
 ) {
 
