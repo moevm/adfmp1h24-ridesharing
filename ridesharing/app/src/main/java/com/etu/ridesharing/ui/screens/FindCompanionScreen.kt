@@ -134,6 +134,7 @@ fun FindCompanionScreen(
 
             }
             LazyColumn(modifier = Modifier.padding(top = 32.dp)) {
+                var i=0
                 drivesUsers.forEach{user ->
                     var filtered = user.userDrives.filter {
                         filterFun(
@@ -147,9 +148,10 @@ fun FindCompanionScreen(
                         )
                     }
                     items(filtered.size) { driveIndex ->
-                        if (driveIndex > 0) {
+                        if (i > 0) {
                             Spacer(modifier = Modifier.height(16.dp))
                         }
+                        i++
                         FindCompanionCard(
                             user = user,
                             onItemClick = onItemClick,
