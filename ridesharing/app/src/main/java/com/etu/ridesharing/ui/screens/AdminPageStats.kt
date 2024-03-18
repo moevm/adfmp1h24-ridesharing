@@ -78,54 +78,48 @@ fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, 
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            CustomTextField(
-                isError = textFrom.length == 8 && !checkValue(textFrom),
-                supportingText = {
-                     if (textFrom.length == 8 && !checkValue(textFrom)){
-                         Text(
-                             modifier = Modifier.fillMaxWidth(),
-                             text = "Неправильная дата",
-                             color = MaterialTheme.colorScheme.error
-                         )
-                     }
-                },
-                text = "C:",
-                type = "date",
-                label = { Text("дд/мм/гггг") },
-                value = textFrom,
-                onValueChange = {onChange1(it)},
-                //leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
-            )
-            IconButton(onClick = { DatePickerDialog1.show() }) {
-                Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
-            }
+        CustomTextField(
+            isError = textFrom.length == 8 && !checkValue(textFrom),
+            supportingText = {
+                 if (textFrom.length == 8 && !checkValue(textFrom)){
+                     Text(
+                         modifier = Modifier.fillMaxWidth(),
+                         text = "Неправильная дата",
+                         color = MaterialTheme.colorScheme.error
+                     )
+                 }
+            },
+            text = "C:",
+            type = "date",
+            label = { Text("дд/мм/гггг") },
+            value = textFrom,
+            onValueChange = {onChange1(it)},
+            leadIcon = { IconButton(onClick = { DatePickerDialog1.show() }) {
+                           Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
+                       } }
+        )
 
-        }
         Spacer(modifier = Modifier.height(10.dp))
-        Row(verticalAlignment = Alignment.CenterVertically){
-            CustomTextField(
-                isError = textTo.length == 8 && !checkValue(textTo),
-                supportingText = {
-                    if (textTo.length == 8 && !checkValue(textTo)){
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "Неправильная дата",
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
-                },
-                text = "По:",
-                type = "date",
-                label = { Text("дд/мм/гггг") },
-                value = textTo,
-                onValueChange = {onChange2(it)},
-                //leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
-            )
-            IconButton(onClick = { DatePickerDialog2.show() }) {
+        CustomTextField(
+            isError = textTo.length == 8 && !checkValue(textTo),
+            supportingText = {
+                if (textTo.length == 8 && !checkValue(textTo)){
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Неправильная дата",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+            text = "По:",
+            type = "date",
+            label = { Text("дд/мм/гггг") },
+            value = textTo,
+            onValueChange = {onChange2(it)},
+            leadIcon = { IconButton(onClick = { DatePickerDialog2.show() }) {
                 Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
-            }
-        }
+            } }
+        )
 
         Column(
             Modifier

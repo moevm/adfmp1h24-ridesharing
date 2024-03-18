@@ -157,10 +157,8 @@ fun MyDriveDialog(
                 Column(
                     modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp)
                 ) {
-
                         val maxCharDate = 8
-                        Row(verticalAlignment = Alignment.CenterVertically){
-                            CustomTextField(
+                        CustomTextField(
                             isError = isErrorData,
                             supportingText = {
                                 if (isErrorData){
@@ -181,14 +179,10 @@ fun MyDriveDialog(
                                 }
                                 isErrorData = driveDate.length == 8 && !checkValue(driveDate)
                             },
-                            //leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
-                        )
-                            IconButton(onClick = { DatePickerDialog.show() }) {
+                            leadIcon = { IconButton(onClick = { DatePickerDialog.show() }) {
                                 Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
-                            }
-
-                        }
-
+                            } }
+                        )
 
                         val maxCharTime = 4
                         CustomTextField(

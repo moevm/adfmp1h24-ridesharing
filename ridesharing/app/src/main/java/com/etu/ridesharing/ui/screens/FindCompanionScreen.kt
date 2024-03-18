@@ -224,17 +224,16 @@ fun FindCompanionDialog(
             Row(
             ){
                 Column(
-                    modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp),
+                    modifier = Modifier.weight(0.9f).padding(start = 8.dp, top = 32.dp),
                 ) {
                     val maxCharDate = 8
                     Text(text = "Дата:")
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()){
-                        CustomTextField(
+
+                    CustomTextField(
                         isError = isErrorDataF,
                         supportingText = {
                             if (isErrorDataF){
                                 Text(
-                                    modifier = Modifier.fillMaxWidth(),
                                     text = "Неправильная дата",
                                     color = MaterialTheme.colorScheme.error
                                 )
@@ -254,14 +253,12 @@ fun FindCompanionDialog(
                             }
                             isErrorDataF = filterDateFrom_temp.length == 8 && !checkValue(filterDateFrom_temp)
                         },
-                        //leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
-                    )
-                        IconButton(onClick = { DatePickerDialog1.show() }) {
+                        leadIcon = { IconButton(onClick = { DatePickerDialog1.show() }) {
                             Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
-                        }
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically){
-                        CustomTextField(
+                        } }
+                    )
+
+                    CustomTextField(
                         isError = isErrorDataT,
                         supportingText = {
                             if (isErrorDataT){
@@ -281,12 +278,10 @@ fun FindCompanionDialog(
                             }
                             isErrorDataT = filterDateTo_temp.length == 8 && !checkValue(filterDateTo_temp)
                         },
-                        //leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
-                    )
-                        IconButton(onClick = { DatePickerDialog2.show() }) {
+                        leadIcon = { IconButton(onClick = { DatePickerDialog2.show() }) {
                             Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
-                        }
-                    }
+                        } }
+                    )
 
                     Text(text = "Цена:")
                     CustomTextField(
