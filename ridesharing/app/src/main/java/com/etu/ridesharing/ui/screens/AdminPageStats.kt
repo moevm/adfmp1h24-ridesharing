@@ -1,5 +1,7 @@
 package com.etu.ridesharing.ui.screens
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,23 +12,58 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import com.etu.ridesharing.R
 import com.etu.ridesharing.ui.components.CustomTextField
+import java.util.Calendar
 import kotlin.math.abs
 
 @Composable
 fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, onChange2: (String)->Unit) {
     val focusManager = LocalFocusManager.current
+
+    val mContext = LocalContext.current
+    val mYear: Int
+    val mMonth: Int
+    val mDay: Int
+
+    // Initializing a Calendar
+    val mCalendar = Calendar.getInstance()
+
+    // Fetching current year, month and day
+    mYear = mCalendar.get(Calendar.YEAR)
+    mMonth = mCalendar.get(Calendar.MONTH)
+    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+
+    val DatePickerDialog1 = DatePickerDialog(
+        mContext,
+        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+            onChange1("${mDayOfMonth.toString().padStart(2,'0')}${(mMonth+1).toString().padStart(2,'0')}$mYear")
+        }, mYear, mMonth, mDay
+    )
+
+    val DatePickerDialog2 = DatePickerDialog(
+        mContext,
+        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+            onChange2("${mDayOfMonth.toString().padStart(2,'0')}${(mMonth+1).toString().padStart(2,'0')}$mYear")
+        }, mYear, mMonth, mDay
+    )
+
 
     Column(
         modifier = Modifier
@@ -41,47 +78,48 @@ fun AdminPageStats(textFrom: String, textTo: String, onChange1: (String)->Unit, 
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Row(){
-            CustomTextField(
-                isError = textFrom.length == 8 && !checkValue(textFrom),
-                supportingText = {
-                     if (textFrom.length == 8 && !checkValue(textFrom)){
-                         Text(
-                             modifier = Modifier.fillMaxWidth(),
-                             text = "Неправильная дата",
-                             color = MaterialTheme.colorScheme.error
-                         )
-                     }
-                },
-                text = "C:",
-                type = "date",
-                label = { Text("дд/мм/гггг") },
-                value = textFrom,
-                onValueChange = {onChange1(it)},
-                leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
-            )
-        }
+        CustomTextField(
+            isError = textFrom.length == 8 && !checkValue(textFrom),
+            supportingText = {
+                 if (textFrom.length == 8 && !checkValue(textFrom)){
+                     Text(
+                         modifier = Modifier.fillMaxWidth(),
+                         text = "Неправильная дата",
+                         color = MaterialTheme.colorScheme.error
+                     )
+                 }
+            },
+            text = "C:",
+            type = "date",
+            label = { Text("дд/мм/гггг") },
+            value = textFrom,
+            onValueChange = {onChange1(it)},
+            leadIcon = { IconButton(onClick = { DatePickerDialog1.show() }) {
+                           Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
+                       } }
+        )
+
         Spacer(modifier = Modifier.height(10.dp))
-        Row(){
-            CustomTextField(
-                isError = textTo.length == 8 && !checkValue(textTo),
-                supportingText = {
-                    if (textTo.length == 8 && !checkValue(textTo)){
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "Неправильная дата",
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
-                },
-                text = "По:",
-                type = "date",
-                label = { Text("дд/мм/гггг") },
-                value = textTo,
-                onValueChange = {onChange2(it)},
-                leadIcon = { Icon(Icons.Outlined.DateRange, contentDescription = "Localized description") }
-            )
-        }
+        CustomTextField(
+            isError = textTo.length == 8 && !checkValue(textTo),
+            supportingText = {
+                if (textTo.length == 8 && !checkValue(textTo)){
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "Неправильная дата",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+            text = "По:",
+            type = "date",
+            label = { Text("дд/мм/гггг") },
+            value = textTo,
+            onValueChange = {onChange2(it)},
+            leadIcon = { IconButton(onClick = { DatePickerDialog2.show() }) {
+                Icon(Icons.Filled.DateRange, contentDescription = "Localized description")
+            } }
+        )
 
         Column(
             Modifier

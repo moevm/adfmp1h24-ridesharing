@@ -28,6 +28,8 @@ import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 fun MessageCardLeft(
     author: String = "Техническая поддержка",
     text: String = "baobabghjnfgnhkjlfghjfsghjlsjhjdhjgjhgkjdfhgjhdkjghdfslhgkjdfhsjghdjhgjldhjgdsghdjshgl",
+    date: String = "20.03.2024",
+    time: String = "12:00",
     modifier: Modifier = Modifier,
 ){
     Row(modifier = modifier
@@ -35,9 +37,15 @@ fun MessageCardLeft(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ){
-        Column(modifier = Modifier.width(250.dp).background(color = colorResource(id = R.color.purple_200))){
+        Column(modifier = Modifier
+            .width(250.dp)
+            .background(color = colorResource(id = R.color.purple_200))){
             Text(text = author, modifier=Modifier.padding(10.dp))
             Text(text = text, modifier=Modifier.padding(start=10.dp, end=10.dp, bottom=10.dp))
+            Row {
+                Text(text = date, modifier=Modifier.padding(10.dp))
+                Text(text = time, modifier=Modifier.padding(10.dp))
+            }
         }
     }
 }
@@ -45,6 +53,8 @@ fun MessageCardLeft(
 @Composable @Preview
 fun MessageCardRight(
     text: String = "baobab",
+    date: String = "20.03.2024",
+    time: String = "12:00",
     modifier: Modifier = Modifier,
 ){
     Row(
@@ -54,8 +64,14 @@ fun MessageCardRight(
         horizontalArrangement = Arrangement.End
     ){
         Spacer(Modifier.width(50.dp))
-        Column(modifier = Modifier.fillMaxWidth().background(color = colorResource(id = R.color.teal_200))){
+        Column(modifier = Modifier
+            .fillMaxWidth()
+            .background(color = colorResource(id = R.color.teal_200))){
             Text(text = text, modifier=Modifier.padding(10.dp))
+            Row {
+                Text(text = date, modifier=Modifier.padding(10.dp))
+                Text(text = time, modifier=Modifier.padding(10.dp))
+            }
         }
     }
 }
