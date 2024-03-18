@@ -57,8 +57,10 @@ import java.util.UUID
 fun FindCompanionScreen(
     usersList: MutableList<UserState>,
     currentUser: UserState,
-    companionDrivesList: MutableList<DriveInfoState>,
     onItemClick: (Int, UUID?) -> Unit,
+    dishnik: String,
+    from:String,
+    to:String,
     modifier: Modifier = Modifier
 ) {
     val openAlertDialog = remember { mutableStateOf(false) }
@@ -66,8 +68,17 @@ fun FindCompanionScreen(
     var filterDateTo by rememberSaveable { mutableStateOf("") }
     var filterPriceLow by rememberSaveable { mutableStateOf("") }
     var filterPriceHigh by rememberSaveable { mutableStateOf("") }
-    var filterSearchFrom by rememberSaveable { mutableStateOf("") }
-    var filterSearchTo by rememberSaveable { mutableStateOf("") }
+    val dish by rememberSaveable { mutableStateOf(dishnik) }
+    val filterUsers = usersList.filter {
+        filterUser(
+            it,
+            currentUser,
+            dish
+        )
+    }
+    val drivesUsers by rememberSaveable { mutableStateOf(filterUsers) }
+    var filterSearchFrom by rememberSaveable { mutableStateOf(from) }
+    var filterSearchTo by rememberSaveable { mutableStateOf(to) }
     val focusManager = LocalFocusManager.current
     when {
         openAlertDialog.value -> {
@@ -123,13 +134,8 @@ fun FindCompanionScreen(
 
             }
             LazyColumn(modifier = Modifier.padding(top = 32.dp)) {
-                var filtUsers = usersList.filter {
-                    filterUser(
-                        it,
-                        currentUser
-                    )
-                }
-                filtUsers.forEach{user ->
+                var i=0
+                drivesUsers.forEach{user ->
                     var filtered = user.userDrives.filter {
                         filterFun(
                             it,
@@ -142,9 +148,10 @@ fun FindCompanionScreen(
                         )
                     }
                     items(filtered.size) { driveIndex ->
-                        if (driveIndex > 0) {
+                        if (i > 0) {
                             Spacer(modifier = Modifier.height(16.dp))
                         }
+                        i++
                         FindCompanionCard(
                             user = user,
                             onItemClick = onItemClick,
@@ -224,7 +231,7 @@ fun FindCompanionDialog(
             Row(
             ){
                 Column(
-                    modifier = Modifier.weight(0.9f).padding(start = 8.dp, top = 32.dp),
+                    modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp),
                 ) {
                     val maxCharDate = 8
                     Text(text = "Дата:")
@@ -390,6 +397,10 @@ fun filterFun(item : DriveInfoState, from : String = "", to : String = "", price
     }
     return flag1 and flag2 and flag3 and flag4 and flag5 and flag6
 }
-fun filterUser(item:UserState,user:UserState): Boolean{
-    return item != user
+fun filterUser(item:UserState,user:UserState,dishnik:String): Boolean{
+    if(dishnik==""){
+        return item != user
+    }else{
+        return item.id.toString() == dishnik
+    }
 }
