@@ -37,9 +37,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.etu.ridesharing.R
+import com.etu.ridesharing.data.DataCitiesList
 import com.etu.ridesharing.data.DriveInfoState
 import com.etu.ridesharing.data.UserState
 import com.etu.ridesharing.models.DriveInfoModel
+import com.etu.ridesharing.ui.components.AutoCompleteTextField
 import com.etu.ridesharing.ui.components.CustomTextField
 import com.etu.ridesharing.ui.components.FindCompanionCard
 import java.text.SimpleDateFormat
@@ -58,6 +60,8 @@ fun FindCompanionScreen(
     var filterDateTo by rememberSaveable { mutableStateOf("") }
     var filterPriceLow by rememberSaveable { mutableStateOf("") }
     var filterPriceHigh by rememberSaveable { mutableStateOf("") }
+    var filterSearchFrom by rememberSaveable { mutableStateOf("") }
+    var filterSearchTo by rememberSaveable { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     when {
         openAlertDialog.value -> {
@@ -98,7 +102,7 @@ fun FindCompanionScreen(
                 Column(
                     modifier = Modifier.weight(1.5f).padding(start = 2.dp)
                 ) {
-                    //AutoCompleteTextField(categories = DataCitiesList.citiesList, label = "Откуда")
+                    AutoCompleteTextField(categories = DataCitiesList.citiesList, label = "Откуда", value = filterSearchFrom, onValueChange = {filterSearchFrom = it})
                 }
                 Column(
                     modifier = Modifier.weight(0.1f)
@@ -108,7 +112,7 @@ fun FindCompanionScreen(
                 Column(
                     modifier = Modifier.weight(1.5f).padding(end = 2.dp)
                 ) {
-                   // AutoCompleteTextField(categories = DataCitiesList.citiesList, label = "Куда")
+                    AutoCompleteTextField(categories = DataCitiesList.citiesList, label = "Куда", value = filterSearchTo, onValueChange = {filterSearchTo = it})
                 }
 
             }
@@ -126,7 +130,9 @@ fun FindCompanionScreen(
                             filterDateFrom,
                             filterDateTo,
                             filterPriceLow,
-                            filterPriceHigh
+                            filterPriceHigh,
+                            filterSearchFrom,
+                            filterSearchTo
                         )
                     }
                     items(filtered.size) { driveIndex ->
@@ -311,11 +317,13 @@ fun isDateBefore(date1: String, date2: String): Boolean {
     return parsedDate1.before(parsedDate2) or (parsedDate1 == parsedDate2)
 }
 
-fun filterFun(item : DriveInfoState, from : String, to : String, priceLow : String, priceHight : String) : Boolean{
-    var flag1 = false
-    var flag2 = false
-    var flag3 = false
-    var flag4 = false
+fun filterFun(item : DriveInfoState, from : String = "", to : String = "", priceLow : String = "", priceHight : String = "",cityFrom: String,cityTo: String) : Boolean{
+    var flag1 = true
+    var flag2 = true
+    var flag3 = true
+    var flag4 = true
+    var flag5 = true
+    var flag6 = true
     if(from == "") {
         flag1 = true
     }else{
@@ -332,7 +340,17 @@ fun filterFun(item : DriveInfoState, from : String, to : String, priceLow : Stri
     if((priceHight == "")or(item.price <= priceHight.toIntOrNull() ?: 0)){
         flag4 = true
     }
-    return flag1 and flag2 and flag3 and flag4
+    if(cityFrom == ""){
+        flag5 = true
+    }else{
+        flag5 = item.from.startsWith(cityFrom, ignoreCase = true)
+    }
+    if(cityTo == ""){
+        flag6 = true
+    }else{
+        flag6 = item.to.startsWith(cityTo, ignoreCase = true)
+    }
+    return flag1 and flag2 and flag3 and flag4 and flag5 and flag6
 }
 fun filterUser(item:UserState,user:UserState): Boolean{
     return item != user
