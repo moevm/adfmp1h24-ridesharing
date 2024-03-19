@@ -62,19 +62,6 @@ fun DriveScreen(
     val openAlertDialog = remember { mutableStateOf(false) }
     val uiState by driveModel.uiState.collectAsState()
     var travel = TravelHistoryState()
-    when {
-        openAlertDialog.value -> {
-            FilterCompanionDialog(
-                onDismissRequest = { openAlertDialog.value = false },
-                onBackStrack =  onBackStrack,
-                onItemClick1 = onItemClick1,
-                onItemClick2 = onItemClick2,
-                userDrive = userDrive.id.toString(),
-                from = uiState.driveInfoState.from,
-                to = uiState.driveInfoState.to
-            )
-        }
-    }
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -91,7 +78,19 @@ fun DriveScreen(
                     .width(300.dp)
                     .fillMaxHeight()
             ) {
-                Spacer(modifier = Modifier.height(150.dp))
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(onClick = {
+                    onItemClick2(uiState.driveInfoState.from, uiState.driveInfoState.to)
+                }) {
+                    Text(fontSize = 20.sp, text = "Все поездки по данному маршруту")
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(onClick = {
+                    onItemClick1(userDrive.id.toString())
+                }) {
+                    Text(fontSize = 20.sp, text = "Все поездки данного водителя")
+                }
+                Spacer(modifier = Modifier.height(24.dp))
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         fontSize = 26.sp,
@@ -102,9 +101,9 @@ fun DriveScreen(
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 CarCard(carInfo = userDrive.cars[0] ?: CarInfoState(), modifier = Modifier)
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 TravelHistoryCard(
                     travel = TravelHistoryState(
                         driveDate = uiState.driveInfoState.driveDate,
@@ -114,7 +113,7 @@ fun DriveScreen(
                         price = uiState.driveInfoState.price,
                     )
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         fontSize = 26.sp,
@@ -125,7 +124,7 @@ fun DriveScreen(
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 }
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 Button(onClick = {
                     travel.driveDate = uiState.driveInfoState.driveDate
                     travel.driveTime = uiState.driveInfoState.driveTime
@@ -141,62 +140,6 @@ fun DriveScreen(
                 }
             }
         }
-        FloatingActionButton(
-            onClick = { openAlertDialog.value = true },
-            modifier = Modifier
-                .align(Alignment.BottomEnd) // Закрепляем кнопку в правом нижнем углу
-                .padding(16.dp), // Добавляем отступ
-            contentColor = Color.Blue,
-        ) {
-            Icon(painter = painterResource(R.drawable.filter), contentDescription = "", modifier = Modifier.size(size = 46.dp),)
-        }
     }
 }
 
-
-@Composable
-fun FilterCompanionDialog(
-    onDismissRequest: () -> Unit,
-    onBackStrack: () -> Unit,
-    onItemClick1: (String) -> Unit,
-    onItemClick2: (String,String) -> Unit,
-    to:String,
-    from:String,
-    userDrive:String
-
-) {
-    Dialog(onDismissRequest = { onDismissRequest() }) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Row(
-            ) {
-                Column (modifier = Modifier.weight(0.7f).padding(start = 16.dp, top = 32.dp),){
-                    Spacer(modifier = Modifier.height(32.dp))
-                    Button(onClick = {
-                        onItemClick2(from, to)
-                        onDismissRequest()
-                    }) {
-                        Text(fontSize = 20.sp, text = "Все поездки по данному маршруту")
-                    }
-                    Spacer(modifier = Modifier.height(32.dp))
-                    Button(onClick = {
-                        onItemClick1(userDrive)
-                        onDismissRequest()
-                    }) {
-                        Text(fontSize = 20.sp, text = "Все поездки данного водителя")
-                    }
-                    Spacer(modifier = Modifier.height(32.dp))
-                }
-                Column(modifier = Modifier.weight(0.2f).padding(start = 16.dp)) {
-                    IconButton(onClick = { onDismissRequest() }, modifier = Modifier.size(R.dimen.padding_medium.dp)) {
-                        Icon(Icons.Outlined.Close, contentDescription = "Localized description")
-                    }
-                }
-            }
-        }
-
-    }
-}
