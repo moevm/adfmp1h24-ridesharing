@@ -79,18 +79,6 @@ fun DriveScreen(
                     .fillMaxHeight()
             ) {
                 Spacer(modifier = Modifier.height(24.dp))
-                Button(onClick = {
-                    onItemClick2(uiState.driveInfoState.from, uiState.driveInfoState.to)
-                }) {
-                    Text(fontSize = 20.sp, text = "Все поездки по данному маршруту")
-                }
-                Spacer(modifier = Modifier.height(24.dp))
-                Button(onClick = {
-                    onItemClick1(userDrive.id.toString())
-                }) {
-                    Text(fontSize = 20.sp, text = "Все поездки данного водителя")
-                }
-                Spacer(modifier = Modifier.height(24.dp))
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         fontSize = 26.sp,
@@ -133,11 +121,23 @@ fun DriveScreen(
                     travel.price = uiState.driveInfoState.price
                     user.historyDrives.add(travel)
                     onBackStrack()
-                },
-                    modifier = Modifier.padding(end = 28.dp)
+                }
                 ) {
                     Text(fontSize = 20.sp, text = "Связаться с водителем")
                 }
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(onClick = {
+                    onItemClick2(uiState.driveInfoState.from, uiState.driveInfoState.to)
+                }) {
+                    Text(fontSize = 20.sp, text = "Все поездки по данному маршруту")
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(onClick = {
+                    onItemClick1(userDrive.id.toString())
+                }) {
+                    Text(fontSize = 20.sp, text = "Все поездки данного водителя")
+                }
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
     }
